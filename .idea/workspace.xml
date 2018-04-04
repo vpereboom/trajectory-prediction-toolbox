@@ -5,15 +5,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/trajectory-prediction-toolbox.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/trajectory-prediction-toolbox.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-parsers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_parsers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-parsers/adsb_decoder.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_parsers/adsb_decoder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-parsers/adsb_raw_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_parsers/adsb_raw_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-parsers/ddr2_raw_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_parsers/ddr2_raw_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data-parsers/decode_adsb_multi_process.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_parsers/decode_adsb_multi_process.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/parse_adsb_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/parse_adsb_files.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/flight_inventarisation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/flight_inventarisation.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/mongo_test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/mongo_test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/nom_proj_distribution.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/nom_proj_distribution.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/parse_ddr2_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/parse_ddr2_files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/db_connector.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/db_connector.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/flight_segregator.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/flight_segregator.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -39,8 +34,8 @@
       <file leaf-file-name="db_connector.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tools/db_connector.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1119">
-              <caret line="85" column="26" selection-start-line="85" selection-start-column="26" selection-end-line="85" selection-end-column="26" />
+            <state relative-caret-position="-6">
+              <caret line="4" column="18" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -57,7 +52,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="parse_adsb_files.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="parse_adsb_files.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/parse_adsb_files.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="75">
@@ -72,10 +67,22 @@
       <file leaf-file-name="parse_ddr2_files.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/parse_ddr2_files.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="18" column="38" selection-start-line="18" selection-start-column="38" selection-end-line="18" selection-end-column="38" />
+            <state relative-caret-position="225">
+              <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="nominal_flight_projection.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tools/nominal_flight_projection.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="827">
+              <caret line="342" column="24" lean-forward="true" selection-start-line="342" selection-start-column="24" selection-end-line="342" selection-end-column="24" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -117,14 +124,15 @@
         <option value="$PROJECT_DIR$/tools/db_connector.py" />
         <option value="$PROJECT_DIR$/data-parsers/adsb_raw_parser.py" />
         <option value="$PROJECT_DIR$/data-parsers/ddr2_raw_parser.py" />
-        <option value="$PROJECT_DIR$/scripts/parse_ddr2_files.py" />
         <option value="$PROJECT_DIR$/scripts/parse_adsb_files.py" />
+        <option value="$PROJECT_DIR$/scripts/parse_ddr2_files.py" />
+        <option value="$PROJECT_DIR$/tools/nominal_flight_projection.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="212" />
-    <option name="y" value="-6" />
+    <option name="x" value="85" />
+    <option name="y" value="40" />
     <option name="width" value="1400" />
     <option name="height" value="1030" />
   </component>
@@ -187,7 +195,25 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.nominal_flight_projection">
+    <configuration name="nominal_flight_projection" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="trajectory-prediction-toolbox" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tools" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tools/nominal_flight_projection.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <configuration name="parse_adsb_files" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="trajectory-prediction-toolbox" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -206,8 +232,33 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
+    <configuration name="parse_ddr2_files" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="trajectory-prediction-toolbox" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/parse_ddr2_files.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.parse_adsb_files" />
+      <item itemvalue="Python.parse_ddr2_files" />
+      <item itemvalue="Python.nominal_flight_projection" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.nominal_flight_projection" />
+        <item itemvalue="Python.parse_ddr2_files" />
         <item itemvalue="Python.parse_adsb_files" />
       </list>
     </recent_temporary>
@@ -229,27 +280,39 @@
     <frame x="55" y="-6" width="1865" height="1086" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18766756" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32991803" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Python Console" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info id="Favorites" side_tool="true" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.18766756" />
+      <window_info anchor="bottom" id="TODO" order="10" />
+      <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
+      <window_info active="true" anchor="bottom" id="Run" order="6" visible="true" weight="0.32991803" />
+      <window_info anchor="bottom" id="Version Control" order="3" />
+      <window_info anchor="bottom" id="Python Console" order="0" />
+      <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Terminal" order="1" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.39959016" />
+      <window_info id="Favorites" order="0" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="5" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
+      <window_info anchor="bottom" id="Message" order="4" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tools/nominal_flight_projection.py</url>
+          <line>134</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="17" />
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/data_parsers/adsb_decoder.py">
@@ -279,23 +342,6 @@
     <entry file="file://$PROJECT_DIR$/tools/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/tools/db_connector.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1119">
-          <caret line="85" column="26" selection-start-line="85" selection-start-column="26" selection-end-line="85" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tools/flight_segregator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data_parsers/ddr2_raw_parser.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -313,10 +359,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/lib/python3.5/tkinter/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="366">
+          <caret line="37" selection-start-line="37" selection-end-line="37" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/parse_ddr2_files.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="38" selection-start-line="18" selection-start-column="38" selection-end-line="18" selection-end-column="38" />
+        <state relative-caret-position="225">
+          <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
@@ -329,6 +382,33 @@
           <caret line="5" column="47" selection-start-line="5" selection-start-column="47" selection-end-line="5" selection-end-column="47" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/flight_segregator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/db_connector.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6">
+          <caret line="4" column="18" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/nominal_flight_projection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="827">
+          <caret line="342" column="24" lean-forward="true" selection-start-line="342" selection-start-column="24" selection-end-line="342" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>

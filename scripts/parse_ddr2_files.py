@@ -12,7 +12,7 @@ cols = ['seg_id', 'org', 'dst', 'ac_type', 't_seg_b', 't_seg_e', 'fl_seg_b',
             'seg_par']
 
 for f_csv in files:
-    f_in = os.join(fpath, f_csv)
+    f_in = os.path.join(fpath, f_csv)
     ftype = f_csv.strip('.so6').split('_')[-1]
     print(f_in)
     print(ftype)
