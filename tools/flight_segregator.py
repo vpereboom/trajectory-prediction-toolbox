@@ -1,6 +1,4 @@
 import numpy as np
-CL = MongoClient()
-DB = CL['flights']
 
 
 def separate_flights(icao_df, split_window=1800):

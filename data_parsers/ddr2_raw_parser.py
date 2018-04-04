@@ -5,14 +5,10 @@ import time
 import numpy as np
 import warnings
 import datetime
-from pymongo import MongoClient
 
 from tools.db_connector import save_ddr2_flights_to_db
 
 warnings.filterwarnings("ignore")
-
-CL = MongoClient()
-DB = CL['flights']
 
 
 def create_epoch_ts(r):
@@ -49,7 +45,7 @@ def process_flid_df(df_in):
                                                                    'lon_seg_e']] / 60
     df = df.drop(['t_seg_b', 't_seg_e', 'dd_seg_b', 'dd_seg_e'], axis=1)
 
-    save_ddr2_flights_to_db(df, DB)
+    save_ddr2_flights_to_db(df)
 
     return True
 

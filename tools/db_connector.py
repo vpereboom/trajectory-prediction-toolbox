@@ -2,8 +2,11 @@ from pymongo import MongoClient
 import pandas as pd
 import json
 
+CL = MongoClient()
+DB = CL['flights']
 
-def save_adsb_flights_to_db(df, database, coll='adsb_flights'):
+
+def save_adsb_flights_to_db(df, coll='adsb_flights'):
     for name, g in df.groupby('flight_id'):
         fl_data = g[['ts', 'lat', 'lon', 'alt', 'spd', 'hdg', 'roc']]
         fl_data = fl_data.reset_index()
@@ -32,7 +35,7 @@ def save_adsb_flights_to_db(df, database, coll='adsb_flights'):
                 # "flight_data": fl_data.to_dict('list'),
             }
             try:
-                database[coll].insert_one(dct)
+                DB[coll].insert_one(dct)
                 print("Flight saved to DB")
             except:
                 print("Saving to DB failed")
@@ -43,7 +46,7 @@ def save_adsb_flights_to_db(df, database, coll='adsb_flights'):
     return True
 
 
-def save_ddr2_flights_to_db(df_in, database, coll='ddr2_flights'):
+def save_ddr2_flights_to_db(df_in, coll='ddr2_flights'):
     df = df_in
     try:
         dct = {
@@ -75,7 +78,7 @@ def save_ddr2_flights_to_db(df_in, database, coll='ddr2_flights'):
             "end_lon": df.loc[df['seq'] == df['seq'].max(), 'lon_seg_b'].iloc[0],
         }
         try:
-            database[coll].insert_one(dct)
+            DB[coll].insert_one(dct)
             print("Flight saved to DB")
         except Exception as e:
             print("Saving to DB failed")

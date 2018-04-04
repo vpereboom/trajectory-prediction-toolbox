@@ -210,7 +210,7 @@ def process_icao_df(df_raw, merge_on="pos", save_to_db=True):
 
         if save_to_db:
             sep_df = separate_flights(df_merged)
-            save_adsb_flights_to_db(sep_df, DB)
+            save_adsb_flights_to_db(sep_df)
             return True
 
         return df_merged
