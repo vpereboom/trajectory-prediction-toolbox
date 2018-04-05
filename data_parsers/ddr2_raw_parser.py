@@ -1,5 +1,4 @@
 import pandas as pd
-#import pyModeS as pms
 import multiprocessing
 import time
 import numpy as np
@@ -92,5 +91,4 @@ if __name__ == '__main__':
         ftype = f_csv.strip('.so6').split('_')[-1]
         print(f_in)
         print(ftype)
-        f_out = "output.csv"
         parse_ddr2_file(f_in, cols, ftype)
