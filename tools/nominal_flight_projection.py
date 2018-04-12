@@ -11,9 +11,9 @@ col = db['adsb_flights']
 def find_coord_dst_hdg(coord1, hdg, dst):
     # https://stackoverflow.com/questions/7222382/get-lat-long-given-current-point-distance-and-bearing
 
-    R = 6378.1  # Radius of the Earth in km
+    R = 6371.1 * 1000  # Radius of the Earth in m
     hdg = math.radians(hdg)  # Bearing is converted to radians.
-    d = dst / 1000  # Distance in km
+    d = dst   # Distance in m
 
     lat1 = math.radians(coord1[0])  # Current lat point converted to radians
     lon1 = math.radians(coord1[1])  # Current long point converted to radians
@@ -86,12 +86,12 @@ def nominal_proj_avg(fl_df, look_ahead_t=600, hdg_start_nr=5):
 
 
 def calc_coord_dst(c1, c2):
-    R = 6378.1 * 1000 # Radius of the Earth in m
+    R = 6371.1 * 1000  # Radius of the Earth in m
 
-    lon1 = c1[0]
-    lat1 = c1[1]
-    lon2 = c2[0]
-    lat2 = c2[1]
+    lat1 = c1[0]
+    lon1 = c1[1]
+    lat2 = c2[0]
+    lon2 = c2[1]
 
     [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
 
@@ -106,7 +106,7 @@ def calc_coord_dst(c1, c2):
 
 
 def calc_coord_dst_simple(c1, c2):
-    R = 6378.1 * 1000  # Radius of the Earth in m
+    R = 6371.1 * 1000  # Radius of the Earth in m
 
     lon1 = c1[0]
     lat1 = c1[1]
@@ -126,16 +126,43 @@ def calc_coord_dst_simple(c1, c2):
 
 
 def calc_bearing(c0, c1):
+    if not all(isinstance(i, tuple) for i in [c0, c1]):
+        return np.nan
 
-    lat1, lon1, lat2, lon2 = map(math.radians, [c0[0], c0[1], c1[0], c1[1]])
+    lat1 = c0[0]
+    lon1 = c0[1]
+    lat2 = c1[0]
+    lon2 = c1[1]
+
+    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
 
     dlon = lon2 - lon1
-    dlat = lat2 - lat1
 
-    bearing = math.atan2(math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dlon),
-                    math.sin(dlon) * math.cos(lat2))
+    x = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dlon)
+    y = math.sin(dlon) * math.cos(lat2)
+    bearing = math.atan2(y, x)
 
     return math.degrees(bearing)
+
+
+def calc_compass_bearing(c0, c1):
+    if not all(isinstance(i, tuple) for i in [c0, c1]):
+        return np.nan
+
+    lat1 = c0[0]
+    lon1 = c0[1]
+    lat2 = c1[0]
+    lon2 = c1[1]
+
+    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
+
+    dlon = lon2 - lon1
+
+    x = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dlon)
+    y = math.sin(dlon) * math.cos(lat2)
+    bearing = math.atan2(y, x)
+
+    return (math.degrees(bearing) + 360) % 360
 
 
 def get_triangle_corner(d0, d1, d2):
