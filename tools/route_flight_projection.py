@@ -79,7 +79,7 @@ def find_waypoint_index(wp, wp_list):
     return iwp
 
 
-def add_waypoints(flight_df, route_wps):
+def add_waypoints_seq(flight_df, route_wps):
     # Reset index to start at 0
     # Ensure all lat and lon values exist in the used rows
     flight_df = flight_df[(flight_df['lat'].notnull() & flight_df['lon'].notnull())]
@@ -131,7 +131,7 @@ def add_waypoints(flight_df, route_wps):
     return flight_df
 
 
-def add_waypoints_v2(flight_df, route_wps):
+def add_waypoints_free(flight_df, route_wps):
     # Reset index to start at 0
     # Ensure all lat and lon values exist in the used rows
     flight_df = flight_df[(flight_df['lat'].notnull() & flight_df['lon'].notnull())]
@@ -146,10 +146,6 @@ def add_waypoints_v2(flight_df, route_wps):
     for i, r in flight_df.iterrows():
 
         wp_ac = (r['lat'], r['lon'])
-
-        #             last_wp = (r['lat'], r['lon'])
-        #         curr_wp_i = find_closest_waypoint_index(wp_ac, route_wps)
-        #         curr_wp_i = last_wp_ix + 1
 
         curr_wp_i = find_waypoint_index(wp_ac, route_wps)
 
@@ -188,7 +184,7 @@ def calc_track_errors(wp_0, wp_1, wp_ac):
         return np.nan, np.nan, np.nan
 
     dst_ac = calc_coord_dst(wp_0, wp_ac)
-    # a_0, a_1, a_ac = evaluate_triangle(wp_0, wp_1, wp_ac)
+    a_0, a_1, a_ac = evaluate_triangle(wp_0, wp_1, wp_ac)
 
     hdg_wp0_wp1 = calc_bearing(wp_0, wp_1)
     hdg_wp0_wpac = calc_bearing(wp_0, wp_ac)
@@ -204,7 +200,6 @@ def calc_track_errors(wp_0, wp_1, wp_ac):
         cte = math.sin(alpha_2) * dst_ac
         ate = math.sqrt(dst_ac ** 2 - cte ** 2) - dst_ac
         tte = dst_proj_ac
-
     except Exception as e:
         print(e)
         cte = np.nan

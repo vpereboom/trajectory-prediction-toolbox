@@ -11,9 +11,9 @@ col = db['adsb_flights']
 def find_coord_dst_hdg(coord1, hdg, dst):
     # https://stackoverflow.com/questions/7222382/get-lat-long-given-current-point-distance-and-bearing
 
-    R = 6371.1 * 1000  # Radius of the Earth in m
+    R = 6378.1  # Radius of the Earth in km
     hdg = math.radians(hdg)  # Bearing is converted to radians.
-    d = dst   # Distance in m
+    d = dst / 1000  # Distance in km
 
     lat1 = math.radians(coord1[0])  # Current lat point converted to radians
     lon1 = math.radians(coord1[1])  # Current long point converted to radians
@@ -21,8 +21,10 @@ def find_coord_dst_hdg(coord1, hdg, dst):
     lat2 = math.asin(math.sin(lat1) * math.cos(d / R) +
                      math.cos(lat1) * math.sin(d / R) * math.cos(hdg))
 
-    lon2 = lon1 + math.atan2(math.sin(hdg) * math.sin(d / R) * math.cos(lat1),
-                             math.cos(d / R) - math.sin(lat1) * math.sin(lat2))
+    x = math.sin(hdg) * math.sin(d / R) * math.cos(lat1)
+    y = math.cos(d / R) - math.sin(lat1) * math.sin(lat2)
+
+    lon2 = lon1 + math.atan2(y, x)
 
     lat2 = math.degrees(lat2)
     lon2 = math.degrees(lon2)
@@ -70,7 +72,7 @@ def nominal_proj_avg(fl_df, look_ahead_t=600, hdg_start_nr=5):
     fl_df['proj_lon'] = np.nan
 
     for i in range(hdg_start_nr, len(fl_df)):
-        if ((fl_df['ts'].iloc[i] - ts_start) < look_ahead_t):
+        if (fl_df['ts'].iloc[i] - ts_start) < look_ahead_t:
             dst_start = (fl_df['ts'].iloc[i] - ts_start) * (spd_avg_start * 0.514444)
             crd = find_coord_dst_hdg(coord_start, hdg_avg_start, dst_start)
             proj_coord_lat.extend([crd[0]])
