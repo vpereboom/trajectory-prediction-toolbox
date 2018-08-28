@@ -3,11 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="fdc4386e-dcd1-4a5a-9c82-b4075d494808" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/DDR and ADSB merging.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/DDR and ADSB merging.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/DDR2_data_parsing.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/nom_proj_distribution.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/nominal_flight_projection.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/nominal_flight_projection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/route_flight_projection.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/route_flight_projection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_parsers/adsb_raw_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_parsers/adsb_raw_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/Nominal Projection Analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Nominal Projection Analysis.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/mongo_test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/mongo_test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/parse_adsb_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/parse_adsb_files.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/db_connector.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/db_connector.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,26 +18,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="nominal_flight_projection.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tools/nominal_flight_projection.py">
+      <file leaf-file-name="parse_adsb_files.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/scripts/parse_adsb_files.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
+            <state>
+              <caret selection-end-column="9" />
               <folding>
-                <element signature="e#0#19#0" expanded="true" />
+                <element signature="e#0#9#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="route_flight_projection.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tools/route_flight_projection.py">
+      <file leaf-file-name="ddr2_raw_parser.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data_parsers/ddr2_raw_parser.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="894">
-              <caret line="164" selection-start-line="164" selection-end-line="164" />
-              <folding>
-                <element signature="e#0#19#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="810">
+              <caret line="61" column="15" selection-start-line="61" selection-start-column="15" selection-end-line="61" selection-end-column="15" />
             </state>
           </provider>
         </entry>
@@ -45,8 +42,8 @@
       <file leaf-file-name="db_connector.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tools/db_connector.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
-              <caret line="37" column="16" selection-start-line="37" selection-start-column="16" selection-end-line="37" selection-end-column="40" />
+            <state relative-caret-position="45">
+              <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -54,25 +51,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="parse_adsb_files.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/parse_adsb_files.py">
+      <file leaf-file-name="adsb_raw_parser.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data_parsers/adsb_raw_parser.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="12" selection-start-line="12" selection-end-line="12" />
+            <state relative-caret-position="444">
+              <caret line="250" column="60" lean-forward="true" selection-start-line="250" selection-start-column="60" selection-end-line="250" selection-end-column="60" />
               <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="parse_ddr2_files.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/parse_ddr2_files.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
+                <element signature="e#121#158#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -102,14 +87,15 @@
         <option value="$PROJECT_DIR$/data-parsers/__init__.py" />
         <option value="$PROJECT_DIR$/__init__.py" />
         <option value="$PROJECT_DIR$/tools/flight_segregator.py" />
-        <option value="$PROJECT_DIR$/tools/db_connector.py" />
         <option value="$PROJECT_DIR$/data-parsers/adsb_raw_parser.py" />
         <option value="$PROJECT_DIR$/data-parsers/ddr2_raw_parser.py" />
-        <option value="$PROJECT_DIR$/scripts/parse_adsb_files.py" />
         <option value="$PROJECT_DIR$/scripts/parse_ddr2_files.py" />
         <option value="$PROJECT_DIR$/data_parsers/ddr2_raw_parser.py" />
         <option value="$PROJECT_DIR$/tools/route_flight_projection.py" />
         <option value="$PROJECT_DIR$/tools/nominal_flight_projection.py" />
+        <option value="$PROJECT_DIR$/data_parsers/adsb_raw_parser.py" />
+        <option value="$PROJECT_DIR$/scripts/parse_adsb_files.py" />
+        <option value="$PROJECT_DIR$/tools/db_connector.py" />
       </list>
     </option>
   </component>
@@ -178,7 +164,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.route_flight_projection">
+  <component name="RunManager" selected="Python.parse_adsb_files">
     <configuration name="nominal_flight_projection" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="trajectory-prediction-toolbox" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -196,6 +182,9 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
     </configuration>
     <configuration name="parse_adsb_files" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="trajectory-prediction-toolbox" />
@@ -214,6 +203,9 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
     </configuration>
     <configuration name="parse_ddr2_files" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="trajectory-prediction-toolbox" />
@@ -232,6 +224,9 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
     </configuration>
     <configuration name="route_flight_projection" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="trajectory-prediction-toolbox" />
@@ -250,6 +245,9 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Python.parse_adsb_files" />
@@ -259,8 +257,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.route_flight_projection" />
         <item itemvalue="Python.parse_adsb_files" />
+        <item itemvalue="Python.route_flight_projection" />
         <item itemvalue="Python.parse_ddr2_files" />
         <item itemvalue="Python.nominal_flight_projection" />
       </list>
@@ -280,10 +278,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="54" y="-11" width="1867" height="1092" extended-state="6" />
+    <frame x="46" y="-11" width="1875" height="1092" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.18766756" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.18686599" />
       <window_info anchor="bottom" id="TODO" order="10" />
       <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="3" />
@@ -354,9 +352,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -364,9 +359,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2085">
           <caret line="142" column="24" selection-start-line="142" selection-start-column="24" selection-end-line="142" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -394,9 +386,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -414,9 +403,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1080">
           <caret line="75" column="43" selection-start-line="75" selection-start-column="43" selection-end-line="75" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -454,9 +440,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -464,9 +447,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="900">
           <caret line="60" column="62" lean-forward="true" selection-start-line="60" selection-start-column="62" selection-end-line="60" selection-end-column="62" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -504,9 +484,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -514,9 +491,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -554,9 +528,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -564,9 +535,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2835">
           <caret line="192" column="23" selection-start-line="192" selection-start-column="23" selection-end-line="192" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -608,9 +576,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -628,9 +593,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3195">
           <caret line="216" column="29" selection-start-line="216" selection-start-column="29" selection-end-line="216" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -679,9 +641,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
           <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -696,16 +655,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3855">
           <caret line="268" column="40" lean-forward="true" selection-start-line="268" selection-start-column="40" selection-end-line="268" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_parsers/adsb_decoder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
-          <caret line="84" column="21" lean-forward="true" selection-start-line="84" selection-start-column="21" selection-end-line="84" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -721,13 +670,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tools/flight_segregator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -735,53 +677,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_parsers/ddr2_raw_parser.py">
+    <entry file="file://$PROJECT_DIR$/tools/nominal_flight_projection.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="75" selection-start-line="75" selection-end-line="75" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_parsers/adsb_raw_parser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-486">
-          <caret line="212" column="42" selection-start-line="212" selection-start-column="42" selection-end-line="212" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/parse_adsb_files.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="12" selection-start-line="12" selection-end-line="12" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/parse_ddr2_files.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="15" column="46" selection-start-line="15" selection-start-column="46" selection-end-line="15" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tools/db_connector.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="37" column="16" selection-start-line="37" selection-start-column="16" selection-end-line="37" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="630">
+          <caret line="42" column="32" selection-start-line="42" selection-start-column="32" selection-end-line="42" selection-end-column="32" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tools/route_flight_projection.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="894">
+        <state relative-caret-position="1659">
           <caret line="164" selection-start-line="164" selection-end-line="164" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
@@ -789,12 +694,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tools/nominal_flight_projection.py">
+    <entry file="file://$PROJECT_DIR$/data_parsers/adsb_decoder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
+        <state relative-caret-position="174">
+          <caret line="84" column="21" lean-forward="true" selection-start-line="84" selection-start-column="21" selection-end-line="84" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/flight_segregator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="31" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/parse_ddr2_files.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_parsers/ddr2_raw_parser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="810">
+          <caret line="61" column="15" selection-start-line="61" selection-start-column="15" selection-end-line="61" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/db_connector.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_parsers/adsb_raw_parser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="444">
+          <caret line="250" column="60" lean-forward="true" selection-start-line="250" selection-start-column="60" selection-end-line="250" selection-end-column="60" />
+          <folding>
+            <element signature="e#121#158#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/parse_adsb_files.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-column="9" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>

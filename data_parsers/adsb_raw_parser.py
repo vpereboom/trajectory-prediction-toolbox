@@ -219,7 +219,8 @@ def process_icao_df(df_raw, merge_on="pos", save_to_db=True):
 def parallelize_on_icao(df_in, func):
     """group the dataframe by icao address and process these using parallelization"""
 
-    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    pool_cpu_size = 6 #multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(pool_cpu_size)
     print("Number of unique icaos: %d", len(df_in['icao'].unique()))
 
     df_processed = pd.concat(pool.map(func, [group for name, group in pd.groupby(df_in, by=['icao'])]))
@@ -232,7 +233,8 @@ def parallelize_on_icao(df_in, func):
 def parallelize_on_icao_save_to_db(df_in, func):
     """group the dataframe by icao address and process these using parallelization"""
 
-    pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    pool_cpu_size = 6 #multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(pool_cpu_size)
     print("Number of unique icaos: %d", len(df_in['icao'].unique()))
 
     res = pool.map(func, [group for name, group in pd.groupby(df_in, by=['icao'])])

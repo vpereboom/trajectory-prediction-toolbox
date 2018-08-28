@@ -4,6 +4,7 @@ import json
 
 CL = MongoClient()
 DB = CL['flights']
+# TODO: Include logger
 
 
 def save_adsb_flights_to_db(df, coll='adsb_flights'):
@@ -37,8 +38,9 @@ def save_adsb_flights_to_db(df, coll='adsb_flights'):
             try:
                 DB[coll].insert_one(dct)
                 print("Flight saved to DB")
-            except:
+            except Exception as e:
                 print("Saving to DB failed")
+                print(e)
 
         except:
             print("Creation of flight dict failed")
