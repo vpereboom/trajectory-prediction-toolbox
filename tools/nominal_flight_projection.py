@@ -2,10 +2,15 @@ import pandas as pd
 import numpy as np
 import math
 from pymongo import MongoClient
+import psycopg2 as psql
+from psycopg2.extras import RealDictCursor
+import time
 
 cl = MongoClient()
 db = cl['flights']
 col = db['adsb_flights']
+
+# TODO Implement metric conventions
 
 
 def find_coord_dst_hdg(coord1, hdg, dst):
@@ -19,10 +24,10 @@ def find_coord_dst_hdg(coord1, hdg, dst):
     lon1 = math.radians(coord1[1])  # Current long point converted to radians
 
     lat2 = math.asin(math.sin(lat1) * math.cos(d / R) +
-                     math.cos(lat1) * math.sin(d / R) * math.cos(hdg))
+        math.cos(lat1) * math.sin(d / R) * math.cos(hdg))
 
-    x = math.sin(hdg) * math.sin(d / R) * math.cos(lat1)
-    y = math.cos(d / R) - math.sin(lat1) * math.sin(lat2)
+    y = math.sin(hdg) * math.sin(d / R) * math.cos(lat1)
+    x = math.cos(d / R) - math.sin(lat1) * math.sin(lat2)
 
     lon2 = lon1 + math.atan2(y, x)
 
@@ -32,27 +37,30 @@ def find_coord_dst_hdg(coord1, hdg, dst):
     return (lat2, lon2)
 
 
-def nominal_proj(fl_df, look_ahead_t=600):
-    proj_coord_lat = []
-    proj_coord_lon = []
+def nominal_proj(fl_df, look_ahead_t):
+    proj_coord_lat = [np.nan]*len(fl_df)
+    proj_coord_lon = [np.nan]*len(fl_df)
 
-    for i, r in fl_df.iterrows():
-        if i < 3:
-            coord_start = (r['lat'], r['lon'])
-            hdg_start = r['hdg']
-            spd_start = r['spd']
-            ts_start = r['ts']
-            proj_coord_lat.extend([np.nan])
-            proj_coord_lon.extend([np.nan])
+    r = {}
+    nr = 0
+    for k in fl_df.keys():
+        r[k] = nr
+        nr = nr+1
+
+    for i, row in enumerate(fl_df.values):
+        if i == 0:
+            coord_start = (row[r['lat']], row[r['lon']])
+            hdg_start = row[r['hdg']]
+            spd_start = row[r['spd']]
+            ts_start = row[r['ts']]
         else:
-            if (r['ts'] - ts_start) < look_ahead_t:
-                dst_start = (r['ts'] - ts_start) * (spd_start * 0.514444)
+            if (row[r['ts']] - ts_start) < look_ahead_t:
+                dst_start = (row[r['ts']] - ts_start) * (spd_start * 0.514444)  # TODO Put fixed values in global or config
                 crd = find_coord_dst_hdg(coord_start, hdg_start, dst_start)
-                proj_coord_lat.extend([crd[0]])
-                proj_coord_lon.extend([crd[1]])
+                proj_coord_lat[i] = crd[0]
+                proj_coord_lon[i] = crd[1]
             else:
-                proj_coord_lat.extend([np.nan])
-                proj_coord_lon.extend([np.nan])
+                break
 
     fl_df['proj_lat'] = proj_coord_lat
     fl_df['proj_lon'] = proj_coord_lon
@@ -176,43 +184,32 @@ def convert_knts_ms(spd):
     return spd*0.51444
 
 
-def calc_track_errors(wp_0, wp_ac, speed_wp0, hdg_wp0, t_wp0, t_ac, wp_1=None):
-    assert all(isinstance(i, tuple) for i in [wp_0, wp_ac]), "Coordinate entries are not tuples"
-    td = t_ac - t_wp0
+def calc_track_errors(wp_last, wp_curr, wp_proj):
+    assert all(isinstance(i, tuple) for i in [wp_last, wp_curr, wp_proj]), "Coordinate entries are not tuples"
 
-    if wp_1:
-        assert isinstance(wp_1, tuple), "Coordinate entries are not tuples"
-        lat1 = wp_0[0]
-        lon1 = wp_0[1]
-        lat2 = wp_1[0]
-        lon2 = wp_1[1]
-        hdg_wp0 = calc_bearing(lat1, lon1, lat2, lon2)
+    dst_last_curr = calc_coord_dst_simple(wp_last, wp_curr)
+    dst_last_proj = calc_coord_dst_simple(wp_last, wp_proj)
+    dst_proj_curr = calc_coord_dst_simple(wp_curr, wp_proj)
 
-    dst_proj = td * convert_knts_ms(speed_wp0)
-    wp_proj = find_coord_dst_hdg(wp_0, hdg_wp0, dst_proj)
-    dst_ac = calc_coord_dst_simple(wp_0, wp_ac)
-    dst_wp_proj = calc_coord_dst_simple(wp_0, wp_proj)
-    dst_proj_ac = calc_coord_dst_simple(wp_ac, wp_proj)
+    hdg_wp0_wpproj = calc_bearing(wp_last, wp_proj)
+    hdg_wp0_wpac = calc_bearing(wp_last, wp_curr)
 
-    hdg_wp0_wpproj = calc_bearing(wp_0, wp_proj)
-    hdg_wp0_wpac = calc_bearing(wp_0, wp_ac)
-
-    alpha_2 = get_triangle_corner(dst_ac, dst_wp_proj, dst_proj_ac)
+    alpha_2 = get_triangle_corner(dst_last_curr, dst_last_proj, dst_proj_curr)
 
     if hdg_wp0_wpproj - hdg_wp0_wpac < 0:
         alpha_2 = -1*alpha_2
 
-    cte = math.sin(alpha_2) * dst_ac
-    tte = dst_proj_ac
+    cte = math.sin(alpha_2) * dst_last_curr
+    tte = dst_proj_curr
     ate = math.sqrt(tte ** 2 - cte ** 2)
 
-    if dst_ac < dst_proj:
+    if dst_last_curr < dst_last_proj:
         ate = -1*ate
 
     return cte, ate, tte
 
 
-def create_projection_dict(fl_dd):
+def create_projection_dict(fl_dd, lookahead_t):
 
     fl_dd = fl_dd[fl_dd['hdg'].first_valid_index():]
     fl_dd = fl_dd.reset_index(drop=True)
@@ -222,22 +219,26 @@ def create_projection_dict(fl_dd):
     if len(fl_dd) == 0:
         return None
 
-    wp_0 = (fl_dd['lat'][0], fl_dd['lon'][0])
-    speed_wp0 = fl_dd['spd'][0]
-    hdg_wp0 = fl_dd['hdg'][0]
-    t_wp0 = fl_dd['ts'][0]
+    proj_df = nominal_proj(fl_dd, lookahead_t)
 
     cte_arr = []
     ate_arr = []
     tte_arr = []
+    proj_df['prev_lat'] = proj_df['lat'].shift(1)
+    proj_df['prev_lon'] = proj_df['lon'].shift(1)
 
-    for ii, r in fl_dd.iterrows():
+    r = {}
+    nr = 0
+    for k in proj_df.keys():
+        r[k] = nr
+        nr = nr + 1
+
+    for ii, row in enumerate(proj_df.values):
         if ii != 0:
-            wp_ac = (r['lat'], r['lon'])
-            t_ac = r['ts']
-
-            cte, ate, tte = calc_track_errors(wp_0, wp_ac, speed_wp0,
-                                              hdg_wp0, t_wp0, t_ac, wp_1=None)
+            wp_last = (row[r['prev_lat']], row[r['prev_lon']])
+            wp_curr = (row[r['lat']], row[r['lon']])
+            wp_proj = (row[r['proj_lat']], row[r['proj_lon']])
+            cte, ate, tte = calc_track_errors(wp_last, wp_curr, wp_proj)
             cte_arr.append(cte)
             ate_arr.append(ate)
             tte_arr.append(tte)
@@ -246,35 +247,87 @@ def create_projection_dict(fl_dd):
             ate_arr.append(0)
             tte_arr.append(0)
 
-    fl_dd['cte'] = cte_arr
-    fl_dd['ate'] = ate_arr
-    fl_dd['tte'] = tte_arr
-    fl_dd['time_proj'] = fl_dd['time_el'] - fl_dd['time_el'].min()
+    proj_df['cte'] = cte_arr
+    proj_df['ate'] = ate_arr
+    proj_df['tte'] = tte_arr
+    proj_df['time_proj'] = proj_df['time_el'] - proj_df['time_el'].min()
 
-    fl_dd = fl_dd.drop(columns=['_id'])
-    dct = fl_dd.to_dict(orient="list")
+    # proj_df = proj_df.drop(columns=['_id'])
+    dct = proj_df.to_dict(orient="list")
+    for k in ["flight_length", "icao", "flight_id", "alt_min", "alt_max", "start_lat", "start_lon", "end_lat", "end_lon", "start_ep", "end_ep", "callsign", "flight_number"]:
+        dct[k] = dct[k][0]
 
     return dct
+
+
+def flush_to_db(insert_lst, conn):
+    try:
+        records_list_template = ','.join(['%s'] * len(insert_lst))
+        insert_query = 'insert into projected_flights (flight_length, icao, flight_id, alt_min, alt_max, \
+                    start_lat, start_lon, end_lat, end_lon, start_ep, end_ep, callsign, flight_number, ts, lat, lon, \
+                    alt, spd, hdg, roc, time_el, proj_lat, proj_lon, prev_lat, prev_lon, cte, ate, tte, time_proj) \
+                    values {}'.format(records_list_template)
+
+        cur_insert = conn.cursor()
+        sql_inj_list = [tuple([d[k] for k in column_order_lst_proj]) for d in insert_lst]
+        cur_insert.execute(insert_query, sql_inj_list)
+        conn.commit()
+        cur_insert.close()
+
+        return True
+
+    except Exception as e:
+        print("Flush to DB failed:")
+        print(e)
+
+        return False
 
 
 if __name__ == "__main__":
 
     la_time = 900
     cnt = 0
-    cnt_max = np.inf  # np.inf
+    cnt_max = np.inf
     fl_len_min = la_time*1.2
     flight_level_min = 20000
-    db['projected_flights'].delete_many({})
 
-    crs = col.find({"flight_length": {"$gt": fl_len_min}})
+    column_order_lst_proj = ["flight_length", "icao", "flight_id", "alt_min", "alt_max", "start_lat", "start_lon", "end_lat",
+                        "end_lon", "start_ep", "end_ep", "callsign", "flight_number", "ts", "lat", "lon", "alt", "spd",
+                        "hdg", "roc", "time_el", "proj_lat", "proj_lon", "prev_lat", "prev_lon", "cte", "ate", "tte",
+                        "time_proj"]
 
-    for fl in crs:
-        fl_count = crs.count()
+    try:
+        conn = psql.connect("dbname='thesisdata' user='postgres' host='localhost' password='postgres'")
+    except Exception as e:
+        print("I am unable to connect to the database.")
+        print(e)
 
-        if cnt < cnt_max:
+    max_inserts = 100
+    fetch_batch_size = max_inserts
+    cnt = 0
+
+    cur_read = conn.cursor(cursor_factory=RealDictCursor)
+    cur_read.execute("SELECT * FROM public.adsb_flights WHERE flight_length > %s;", (fl_len_min,))
+
+    while True:
+
+        batch = cur_read.fetchmany(size=fetch_batch_size)
+
+        if not batch:
+            break
+
+        insert_lst = []
+        for fl in batch:
+
+            t0 = time.time()
+
             fl_d = pd.DataFrame.from_dict(fl)
             fl_d = fl_d[fl_d['alt'] > flight_level_min]
             fl_d['time_el'] = fl_d['ts'] - fl_d['ts'].min()
+
+            # Clean up the dataframe by patching NAN values
+            fl_d['hdg'] = fl_d['hdg'].fillna(method='ffill')
+            fl_d['spd'] = fl_d['spd'].fillna(method='ffill')
 
             if fl_d['time_el'].max() < la_time:
                 print("flight too short")
@@ -284,12 +337,21 @@ if __name__ == "__main__":
                 steps = int(fl_d['time_el'].max() / la_time)
 
                 for i in range(steps):
-                    dct = create_projection_dict(fl_d[fl_d['time_el'] > i * la_time])
+                    dct = create_projection_dict(fl_d[(fl_d['time_el'] > i * la_time) & (fl_d['time_el'] < (i+1) * la_time)], la_time)
                     if dct:
-                        db['projected_flights'].insert_one(dct)
+                        insert_lst.append(dct)
+                        cnt = cnt + 1
 
             except Exception as e:
                 print(e)
                 continue
 
-            cnt = cnt + 1
+            print("Flight %d took %f sec" % (cnt, time.time() - t0))
+
+        # Flush to DB
+        flush_stat = flush_to_db(insert_lst, conn)
+        if flush_stat:
+            print("%d Flights inserted" % len(insert_lst))
+
+    print("Done")
+    cur_read.close()

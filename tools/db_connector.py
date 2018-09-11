@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+import psycopg2 as psql
 import pandas as pd
 import json
 
@@ -89,4 +90,17 @@ def save_ddr2_flights_to_db(df_in, coll='ddr2_flights'):
         print("Creation of flight dict failed")
 
     return True
+
+
+def connect_psql(db):
+    try:
+        conn = psql.connect("dbname='%s' user='postgres' host='localhost' password='postgres'" % db)
+    except Exception as e:
+        print("I am unable to connect to the database.")
+        print(e)
+        return None
+
+    cur = conn.cursor()
+
+    return cur, conn
 
