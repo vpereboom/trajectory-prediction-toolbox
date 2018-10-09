@@ -5,6 +5,7 @@ import psycopg2 as psql
 import itertools
 import datetime
 import multiprocessing
+import pandas as pd
 from psycopg2.extras import RealDictCursor
 
 
@@ -169,6 +170,67 @@ def find_flight_intersect(f1, f2):
     return f1, f2
 
 
+def calc_coord_dst_pp(lon1, lat1, lon2, lat2):
+    R = 6371.1 * 1000  # Radius of the Earth in m
+
+    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
+
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+
+    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    d = R * c
+    return d
+
+
+def postprocess_conflict(b):
+    df1 = pd.DataFrame()
+    for k in ['ts_1', 'lat_1', 'lon_1', 'alt_1', 'spd_1', 'hdg_1', 'roc_1']:
+        df1[k.strip('_1')] = b[k]
+    df2 = pd.DataFrame()
+    for k in ['ts_2', 'lat_2', 'lon_2', 'alt_2', 'spd_2', 'hdg_2', 'roc_2']:
+        df2[k.strip('_2')] = b[k]
+
+    df1['ts'] = df1['ts'].astype(int)
+    df2['ts'] = df2['ts'].astype(int)
+
+    if df1['ts'].max() > df2['ts'].max():
+        df_l = df1
+        df_r = df2
+        df_r['ts_n'] = df_r['ts'].astype(int)
+        sfx = ('_1', '_2')
+    else:
+        df_l = df2
+        df_r = df1
+        df_r['ts_n'] = df_r['ts'].astype(int)
+        sfx = ('_2', '_1')
+
+    dfm = pd.merge_asof(df_l, df_r, on='ts', direction='nearest', tolerance=10, suffixes=sfx)
+
+    dfm['td'] = dfm['ts'] - dfm['ts_n']
+    dfm = dfm.dropna(how='any')
+    if len(dfm) > 0:
+        dfm['dstd'] = dfm.apply(lambda r: calc_coord_dst_pp(r['lat_1'], r['lon_1'], r['lat_2'], r['lon_2']), axis=1)
+        dst = dfm['dstd'].iloc[-1]
+        dfm['ts_2'] = dfm['ts_n']
+        dfm['ts_1'] = dfm['ts']
+
+        b = dfm[['ts_1', 'lat_1', 'lon_1', 'alt_1', 'spd_1', 'hdg_1', 'roc_1',
+                 'ts_2', 'lat_2', 'lon_2', 'alt_2', 'spd_2', 'hdg_2', 'roc_2']].to_dict(orient='list')
+
+        b['td'] = dfm['td'].iloc[-1]
+        b['altd'] = abs(dfm['alt_1'].iloc[-1] - dfm['alt_2'].iloc[-1])
+        b['hdgd'] = abs(dfm['hdg_1'].iloc[-1] - dfm['hdg_2'].iloc[-1])
+        b['dstd'] = dst
+
+        return b
+
+    else:
+        return None
+
+
 def get_conflicts(ep):
 
     fl_start_ep = ep
@@ -238,14 +300,39 @@ def get_conflicts(ep):
                             confl[('%s_1' % k)] = f1[k][:f1ix]
                         for k in ['ts', 'lat', 'lon', 'alt', 'spd', 'hdg', 'roc']:
                             confl[('%s_2' % k)] = f2[k][:f2ix]
-                        confl['flight_id_1'] = f1['flight_id']
-                        confl['flight_id_2'] = f2['flight_id']
-                        confl['td'] = abs(f1['ts'][f1ix] - f2['ts'][f2ix])
-                        confl['altd'] = abs(f1['alt'][f1ix] - f2['alt'][f2ix])
-                        confl['dstd'] = d
-                        confl['hdgd'] = abs(f1['hdg'][f1ix] - f2['hdg'][f2ix])
+                        # confl['flight_id_1'] = f1['flight_id']
+                        # confl['flight_id_2'] = f2['flight_id']
+                        # # cidstr = "%s-%s" % (f1['flight_id'], f2['flight_id'])
+                        # # confl['ćid'] = cidstr
+                        # confl['td'] = tdiff
+                        # confl['altd'] = abs(f1['alt'][f1ix] - f2['alt'][f2ix])
+                        # confl['dstd'] = d
+                        # confl['hdgd'] = abs(f1['hdg'][f1ix] - f2['hdg'][f2ix])
+                        #
+                        # try:
+                        #     sql_inj_lst.append(tuple(confl[kk] for kk in col_lst))
+                        # except Exception as e1:
+                        #     print(e1)
 
-                        sql_inj_lst.append(tuple(confl[kk] for kk in col_lst))
+                        confln = postprocess_conflict(confl)
+
+                        if confln:
+
+                            confln['flight_id_1'] = f1['flight_id']
+                            confln['flight_id_2'] = f2['flight_id']
+                            # cidstr = "%s-%s" % (f1['flight_id'], f2['flight_id'])
+                            # confl['ćid'] = cidstr
+                            # confl['td'] = tdiff
+                            # confl['altd'] = abs(f1['alt'][i1] - f2['alt'][i2])
+                            # confl['dstd'] = d
+                            # confl['hdgd'] = abs(f1['hdg'][i1] - f2['hdg'][i2])
+
+                            if confln['dstd'] < max_dst:
+
+                                try:
+                                    sql_inj_lst.append(tuple(confln[kk] for kk in col_lst))
+                                except Exception as e1:
+                                    print(e1)
 
         cnt = cnt + 1
 

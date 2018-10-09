@@ -184,27 +184,42 @@ def convert_knts_ms(spd):
     return spd*0.51444
 
 
+def heading_diff(h1, h2):
+
+    r = (h2 - h1) % 360.0
+
+    if r >= 180.0:
+        r -= 360.0
+
+    return r
+
+
 def calc_track_errors(wp_last, wp_curr, wp_proj):
     assert all(isinstance(i, tuple) for i in [wp_last, wp_curr, wp_proj]), "Coordinate entries are not tuples"
 
-    dst_last_curr = calc_coord_dst_simple(wp_last, wp_curr)
-    dst_last_proj = calc_coord_dst_simple(wp_last, wp_proj)
+    # dst_last_curr = calc_coord_dst_simple(wp_last, wp_curr)
+    # dst_last_proj = calc_coord_dst_simple(wp_last, wp_proj)
     dst_proj_curr = calc_coord_dst_simple(wp_curr, wp_proj)
 
-    hdg_wp0_wpproj = calc_bearing(wp_last, wp_proj)
-    hdg_wp0_wpac = calc_bearing(wp_last, wp_curr)
+    # hdg_last_proj = calc_compass_bearing(wp_last, wp_proj)
+    # hdg_last_curr = calc_compass_bearing(wp_last, wp_curr)
+    hdg_curr_proj = calc_compass_bearing(wp_curr, wp_proj)
+    hdg_curr_last = calc_compass_bearing(wp_curr, wp_last)
 
-    alpha_2 = get_triangle_corner(dst_last_curr, dst_last_proj, dst_proj_curr)
-
-    if hdg_wp0_wpproj - hdg_wp0_wpac < 0:
-        alpha_2 = -1*alpha_2
-
-    cte = math.sin(alpha_2) * dst_last_curr
+    alpha = heading_diff(hdg_curr_proj, hdg_curr_last) #get_triangle_corner(dst_last_curr, dst_last_proj, dst_proj_curr)
     tte = dst_proj_curr
-    ate = math.sqrt(tte ** 2 - cte ** 2)
 
-    if dst_last_curr < dst_last_proj:
-        ate = -1*ate
+    if abs(alpha) < 90:
+        cte = math.sin(math.radians(alpha)) * tte
+        ate = -math.sqrt(tte ** 2 - cte ** 2)
+
+    else:
+        if alpha < 0:
+            cte = math.sin(math.radians(-180 - alpha)) * tte
+            ate = math.sqrt(tte ** 2 - cte ** 2)
+        else:
+            cte = math.sin(math.radians(180 - alpha)) * tte
+            ate = math.sqrt(tte ** 2 - cte ** 2)
 
     return cte, ate, tte
 
@@ -285,11 +300,11 @@ def flush_to_db(insert_lst, conn):
 
 if __name__ == "__main__":
 
-    la_time = 900
+    la_time = 1200
     cnt = 0
     cnt_max = np.inf
-    fl_len_min = la_time*1.2
-    flight_level_min = 20000
+    fl_len_min = la_time*0.6
+    flight_level_min = 15000
 
     column_order_lst_proj = ["flight_length", "icao", "flight_id", "alt_min", "alt_max", "start_lat", "start_lon", "end_lat",
                         "end_lon", "start_ep", "end_ep", "callsign", "flight_number", "ts", "lat", "lon", "alt", "spd",
@@ -329,12 +344,12 @@ if __name__ == "__main__":
             fl_d['hdg'] = fl_d['hdg'].fillna(method='ffill')
             fl_d['spd'] = fl_d['spd'].fillna(method='ffill')
 
-            if fl_d['time_el'].max() < la_time:
+            if fl_d['time_el'].max() < fl_len_min:
                 print("flight too short")
                 continue
 
             try:
-                steps = int(fl_d['time_el'].max() / la_time)
+                steps = int(fl_d['time_el'].max() / la_time) + 1
 
                 for i in range(steps):
                     dct = create_projection_dict(fl_d[(fl_d['time_el'] > i * la_time) & (fl_d['time_el'] < (i+1) * la_time)], la_time)
