@@ -247,14 +247,8 @@ def parallelize_on_icao_save_to_db(df_in, func):
 def parse_adsb_file(fin):
 
     t_start = time.time()
-    df_adsb = pd.read_csv(fin, names=['ts', 'icao', 'tc', 'msg'])
+    df_adsb = pd.read_csv(fin, names=['ts', 'tc', 'icao', 'msg'])
     parallelize_on_icao_save_to_db(df_adsb, process_icao_df)
-
-    # df_out = parallelize_on_icao(df_adsb, process_icao_df)
-    # df_out.sort_values(['icao', 'ts'], inplace=True)
-    #
-    # print("Flush to csv file: %s, %d lines\n" % (fout, df_out.shape[0]))
-    # df_out.to_csv(fout, index=False, header=False)
 
     t_pc = time.time()-t_start
     print("Parsing finished in %s seconds" % str(t_pc))

@@ -92,8 +92,8 @@ def calc_bearing(c0, c1):
 
 
 def box_area(box):
-    w = calc_coord_dst_simple([box[0], box[2]], [box[1], box[2]])
-    h = calc_coord_dst_simple([box[0], box[2]], [box[0], box[3]])
+    w = calc_coord_dst([box[0], box[2]], [box[1], box[2]])
+    h = calc_coord_dst([box[0], box[2]], [box[0], box[3]])
 
     return w * h
 
@@ -186,6 +186,9 @@ def calc_coord_dst_pp(lon1, lat1, lon2, lat2):
 
 
 def postprocess_conflict(b):
+
+    ts_tol = 120
+
     df1 = pd.DataFrame()
     for k in ['ts_1', 'lat_1', 'lon_1', 'alt_1', 'spd_1', 'hdg_1', 'roc_1']:
         df1[k.strip('_1')] = b[k]
@@ -193,17 +196,34 @@ def postprocess_conflict(b):
     for k in ['ts_2', 'lat_2', 'lon_2', 'alt_2', 'spd_2', 'hdg_2', 'roc_2']:
         df2[k.strip('_2')] = b[k]
 
+    df1 = df1.dropna(how='any', subset=['lat', 'lon', 'alt'])
+    df2 = df2.dropna(how='any', subset=['lat', 'lon', 'alt'])
+
+    if not len(df1) > 0:
+        return None
+    if not len(df2) > 0:
+        return None
+
+    if abs(df1['ts'].iloc[-1] - df2['ts'].iloc[-1]) > ts_tol:
+        return None
+
     df1['ts'] = df1['ts'].astype(int)
     df2['ts'] = df2['ts'].astype(int)
 
     if df1['ts'].max() > df2['ts'].max():
         df_l = df1
         df_r = df2
+
+        df_l['ts'] = df_l['ts'] - (df_l['ts'].iloc[-1] - df_r['ts'].iloc[-1])
+
         df_r['ts_n'] = df_r['ts'].astype(int)
         sfx = ('_1', '_2')
     else:
         df_l = df2
         df_r = df1
+
+        df_l['ts'] = df_l['ts'] - (df_l['ts'].iloc[-1] - df_r['ts'].iloc[-1])
+
         df_r['ts_n'] = df_r['ts'].astype(int)
         sfx = ('_2', '_1')
 
@@ -213,16 +233,16 @@ def postprocess_conflict(b):
     dfm = dfm.dropna(how='any')
     if len(dfm) > 0:
         dfm['dstd'] = dfm.apply(lambda r: calc_coord_dst_pp(r['lat_1'], r['lon_1'], r['lat_2'], r['lon_2']), axis=1)
-        dst = dfm['dstd'].iloc[-1]
+        dst = dfm['dstd'].iloc[-1].astype(float)
         dfm['ts_2'] = dfm['ts_n']
         dfm['ts_1'] = dfm['ts']
 
         b = dfm[['ts_1', 'lat_1', 'lon_1', 'alt_1', 'spd_1', 'hdg_1', 'roc_1',
-                 'ts_2', 'lat_2', 'lon_2', 'alt_2', 'spd_2', 'hdg_2', 'roc_2']].to_dict(orient='list')
+                 'ts_2', 'lat_2', 'lon_2', 'alt_2', 'spd_2', 'hdg_2', 'roc_2']].astype(float).to_dict(orient='list')
 
-        b['td'] = dfm['td'].iloc[-1]
-        b['altd'] = abs(dfm['alt_1'].iloc[-1] - dfm['alt_2'].iloc[-1])
-        b['hdgd'] = abs(dfm['hdg_1'].iloc[-1] - dfm['hdg_2'].iloc[-1])
+        b['td'] = dfm['td'].iloc[-1].astype(float)
+        b['altd'] = abs(dfm['alt_1'].iloc[-1].astype(float) - dfm['alt_2'].iloc[-1].astype(float))
+        b['hdgd'] = abs(dfm['hdg_1'].iloc[-1].astype(float) - dfm['hdg_2'].iloc[-1].astype(float))
         b['dstd'] = dst
 
         return b
@@ -231,20 +251,27 @@ def postprocess_conflict(b):
         return None
 
 
-def get_conflicts(ep):
-
-    fl_start_ep = ep
-    ts_offset = 3600
-    max_dst = 5 * 1852
-    alt_min = 15000
+def get_db_conn():
 
     try:
         conn = psql.connect("dbname='thesisdata' user='postgres' host='localhost' password='postgres'")
+        return conn
+
     except Exception as e:
         print("Unable to connect to the database.")
         print(e)
+        return None
 
-    cur_read = conn.cursor(cursor_factory=RealDictCursor)
+
+def get_conflicts(ep):
+
+    fl_start_ep = ep
+    ts_offset = 1800
+    max_dst = 5 * 1852
+    alt_min = 15000
+
+    conn_read = get_db_conn()
+    cur_read = conn_read.cursor(cursor_factory=RealDictCursor)
     cur_read.execute("SELECT ts, lat, lon, alt, spd, hdg, roc, start_ep, flight_id \
                      FROM public.adsb_flights WHERE flight_length > 500 \
                      AND start_ep BETWEEN %s AND %s;",
@@ -265,87 +292,73 @@ def get_conflicts(ep):
     cnt = 1
     print(len(fset))
 
+    cnt = 0
+
     for fs in fset:
 
         f1 = next(f for f in batch if f['flight_id'] == fs[0])
         f2 = next(f for f in batch if f['flight_id'] == fs[1])
 
-        if abs(f1['start_ep'] - f2['start_ep']) < 1800:
+        # if abs(f1['start_ep'] - f2['start_ep']) < 1800:
 
-            f1crd = [(lt, ln, ts) for lt, ln, alt, ts in
-                     list(zip(f1['lat'], f1['lon'], f1['alt'], f1['ts'])) if alt > alt_min]
+        f1crd = [(lt, ln, ts) for lt, ln, alt, ts in
+                 list(zip(f1['lat'], f1['lon'], f1['alt'], f1['ts'])) if alt > alt_min]
 
-            f2crd = [(lt, ln, ts) for lt, ln, alt, ts in
-                     list(zip(f2['lat'], f2['lon'], f2['alt'], f2['ts'])) if alt > alt_min]
+        f2crd = [(lt, ln, ts) for lt, ln, alt, ts in
+                 list(zip(f2['lat'], f2['lon'], f2['alt'], f2['ts'])) if alt > alt_min]
 
-            if len(f2crd) > 20 and len(f1crd) > 20:
+        if len(f2crd) > 20 and len(f1crd) > 20:
 
-                t1 = time.time()
+            t1 = time.time()
 
-                fi1, fi2 = find_flight_intersect(f1crd, f2crd)
+            fi1, fi2 = find_flight_intersect(f1crd, f2crd)
 
-                if fi1 and fi2:
-                    d, c1, c2, i1, i2 = closest_distance(list(fi1), list(fi2))
-                    bdiff = abs(calc_bearing((fi1[i1 - 1][0], fi1[i1 - 1][1]), (fi1[i1][0], fi1[i1][1])) -
-                                calc_bearing((fi2[i2 - 1][0], fi2[i2 - 1][1]), (fi2[i2][0], fi2[i2][1])))
-                    tdiff = abs(fi1[i1][2] - fi2[i2][2])
+            if fi1 and fi2:
+                d, c1, c2, i1, i2 = closest_distance(list(fi1), list(fi2))
+                bdiff = abs(calc_bearing((fi1[i1 - 1][0], fi1[i1 - 1][1]), (fi1[i1][0], fi1[i1][1])) -
+                            calc_bearing((fi2[i2 - 1][0], fi2[i2 - 1][1]), (fi2[i2][0], fi2[i2][1])))
+                tdiff = abs(fi1[i1][2] - fi2[i2][2])
 
-                    if d < max_dst and bdiff > 10:  # and tdiff < max_ts
+                if d < max_dst and bdiff > 5:  # and tdiff < max_ts
 
-                        f1ix = f1['ts'].index(fi1[i1][2])
-                        f2ix = f2['ts'].index(fi2[i2][2])
+                    f1ix = f1['ts'].index(fi1[i1][2])
+                    f2ix = f2['ts'].index(fi2[i2][2])
 
-                        confl = {}
-                        for k in ['ts', 'lat', 'lon', 'alt', 'spd', 'hdg', 'roc']:
-                            confl[('%s_1' % k)] = f1[k][:f1ix]
-                        for k in ['ts', 'lat', 'lon', 'alt', 'spd', 'hdg', 'roc']:
-                            confl[('%s_2' % k)] = f2[k][:f2ix]
-                        # confl['flight_id_1'] = f1['flight_id']
-                        # confl['flight_id_2'] = f2['flight_id']
-                        # # cidstr = "%s-%s" % (f1['flight_id'], f2['flight_id'])
-                        # # confl['ćid'] = cidstr
-                        # confl['td'] = tdiff
-                        # confl['altd'] = abs(f1['alt'][f1ix] - f2['alt'][f2ix])
-                        # confl['dstd'] = d
-                        # confl['hdgd'] = abs(f1['hdg'][f1ix] - f2['hdg'][f2ix])
-                        #
-                        # try:
-                        #     sql_inj_lst.append(tuple(confl[kk] for kk in col_lst))
-                        # except Exception as e1:
-                        #     print(e1)
+                    confl = {}
+                    for k in ['ts', 'lat', 'lon', 'alt', 'spd', 'hdg', 'roc']:
+                        confl[('%s_1' % k)] = f1[k][:f1ix]
+                    for k in ['ts', 'lat', 'lon', 'alt', 'spd', 'hdg', 'roc']:
+                        confl[('%s_2' % k)] = f2[k][:f2ix]
 
-                        confln = postprocess_conflict(confl)
+                    confln = postprocess_conflict(confl)
 
-                        if confln:
+                    if confln:
 
-                            confln['flight_id_1'] = f1['flight_id']
-                            confln['flight_id_2'] = f2['flight_id']
-                            # cidstr = "%s-%s" % (f1['flight_id'], f2['flight_id'])
-                            # confl['ćid'] = cidstr
-                            # confl['td'] = tdiff
-                            # confl['altd'] = abs(f1['alt'][i1] - f2['alt'][i2])
-                            # confl['dstd'] = d
-                            # confl['hdgd'] = abs(f1['hdg'][i1] - f2['hdg'][i2])
+                        confln['flight_id_1'] = f1['flight_id']
+                        confln['flight_id_2'] = f2['flight_id']
 
-                            if confln['dstd'] < max_dst:
+                        if confln['dstd'] < max_dst:
 
-                                try:
-                                    sql_inj_lst.append(tuple(confln[kk] for kk in col_lst))
-                                except Exception as e1:
-                                    print(e1)
+                            cnt = cnt + 1
 
-        cnt = cnt + 1
+                            try:
+                                sql_inj_lst.append(tuple(confln[kk] for kk in col_lst))
+                            except Exception as e1:
+                                print(e1)
 
-        if len(sql_inj_lst) > 100:
-            cur_inj = conn.cursor()
+        if len(sql_inj_lst) > 10:
+            conn_write = get_db_conn()
+            cur_inj = conn_write.cursor()
             records_list_template = ','.join(['%s'] * len(sql_inj_lst))
             insert_query = 'insert into conflicts (td, altd, dstd, hdgd,\
                                                     flight_id_1, ts_1, lat_1, lon_1, alt_1, spd_1, hdg_1, roc_1,\
                                                     flight_id_2, ts_2, lat_2, lon_2, alt_2, spd_2, hdg_2, roc_2) \
                                                     values {}'.format(records_list_template)
             cur_inj.execute(insert_query, sql_inj_lst)
-            conn.commit()
+            print("%d Conflicts inserted" % len(sql_inj_lst))
+            conn_write.commit()
             cur_inj.close()
+            conn_write.close()
             sql_inj_lst = []
 
     cur_read.close()
@@ -382,7 +395,7 @@ if __name__ == "__main__":
     eplist = [(datetime.datetime.strptime(ts, '%Y-%m-%d %H') - datetime.datetime(1970, 1, 1)).total_seconds() for ts in
               daylst]
 
-    pool = multiprocessing.Pool((multiprocessing.cpu_count() - 2))
+    pool = multiprocessing.Pool((multiprocessing.cpu_count() - 0))
 
     res = pool.map(get_conflicts, eplist)
     pool.close()

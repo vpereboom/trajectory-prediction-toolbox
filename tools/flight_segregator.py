@@ -19,7 +19,7 @@ def separate_flights(icao_df, split_window=1800):
 
     icao_df = icao_df.drop(['ts_diff'], axis=1)
     icao_df['flight_count'] = icao_df['flight'].max()
-    icao_df['flight_id'] = icao_df['icao'].astype(str) + '-' + icao_df['flight'].astype(int).astype(str)
+    icao_df['flight_id'] = icao_df['icao'].astype(str) + '_' + icao_df['ts'].iloc[0].astype(int).astype(str)
     return icao_df
 
 

@@ -252,7 +252,7 @@ def postprocess_conflict(b):
 def get_conflicts(ep):
 
     fl_start_ep = ep
-    ts_offset = 3600
+    ts_offset = 1800
     max_dst = 5 * 1852
     alt_min = 15000
 

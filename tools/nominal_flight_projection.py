@@ -1,227 +1,11 @@
 import pandas as pd
-import numpy as np
-import math
-from pymongo import MongoClient
 import psycopg2 as psql
 from psycopg2.extras import RealDictCursor
 import time
 
-cl = MongoClient()
-db = cl['flights']
-col = db['adsb_flights']
+from tools.flight_projection import *
 
 # TODO Implement metric conventions
-
-
-def find_coord_dst_hdg(coord1, hdg, dst):
-    # https://stackoverflow.com/questions/7222382/get-lat-long-given-current-point-distance-and-bearing
-
-    R = 6378.1  # Radius of the Earth in km
-    hdg = math.radians(hdg)  # Bearing is converted to radians.
-    d = dst / 1000  # Distance in km
-
-    lat1 = math.radians(coord1[0])  # Current lat point converted to radians
-    lon1 = math.radians(coord1[1])  # Current long point converted to radians
-
-    lat2 = math.asin(math.sin(lat1) * math.cos(d / R) +
-        math.cos(lat1) * math.sin(d / R) * math.cos(hdg))
-
-    y = math.sin(hdg) * math.sin(d / R) * math.cos(lat1)
-    x = math.cos(d / R) - math.sin(lat1) * math.sin(lat2)
-
-    lon2 = lon1 + math.atan2(y, x)
-
-    lat2 = math.degrees(lat2)
-    lon2 = math.degrees(lon2)
-
-    return (lat2, lon2)
-
-
-def nominal_proj(fl_df, look_ahead_t):
-    proj_coord_lat = [np.nan]*len(fl_df)
-    proj_coord_lon = [np.nan]*len(fl_df)
-
-    r = {}
-    nr = 0
-    for k in fl_df.keys():
-        r[k] = nr
-        nr = nr+1
-
-    for i, row in enumerate(fl_df.values):
-        if i == 0:
-            coord_start = (row[r['lat']], row[r['lon']])
-            hdg_start = row[r['hdg']]
-            spd_start = row[r['spd']]
-            ts_start = row[r['ts']]
-        else:
-            if (row[r['ts']] - ts_start) < look_ahead_t:
-                dst_start = (row[r['ts']] - ts_start) * (spd_start * 0.514444)  # TODO Put fixed values in global or config
-                crd = find_coord_dst_hdg(coord_start, hdg_start, dst_start)
-                proj_coord_lat[i] = crd[0]
-                proj_coord_lon[i] = crd[1]
-            else:
-                break
-
-    fl_df['proj_lat'] = proj_coord_lat
-    fl_df['proj_lon'] = proj_coord_lon
-
-    return fl_df
-
-
-def nominal_proj_avg(fl_df, look_ahead_t=600, hdg_start_nr=5):
-    proj_coord_lat = []
-    proj_coord_lon = []
-
-    coord_start = (fl_df['lat'].iloc[hdg_start_nr], fl_df['lon'].iloc[hdg_start_nr])
-    hdg_avg_start = fl_df['hdg'].iloc[list(range(0, hdg_start_nr))].mean()
-    spd_avg_start = fl_df['spd'].iloc[list(range(0, hdg_start_nr))].mean()
-    ts_start = fl_df['ts'].iloc[hdg_start_nr]
-    fl_df['proj_lat'] = np.nan
-    fl_df['proj_lon'] = np.nan
-
-    for i in range(hdg_start_nr, len(fl_df)):
-        if (fl_df['ts'].iloc[i] - ts_start) < look_ahead_t:
-            dst_start = (fl_df['ts'].iloc[i] - ts_start) * (spd_avg_start * 0.514444)
-            crd = find_coord_dst_hdg(coord_start, hdg_avg_start, dst_start)
-            proj_coord_lat.extend([crd[0]])
-            proj_coord_lon.extend([crd[1]])
-        else:
-            proj_coord_lat.extend([np.nan])
-            proj_coord_lon.extend([np.nan])
-
-    fl_df['proj_lat'].iloc[range(hdg_start_nr, len(fl_df))] = proj_coord_lat
-    fl_df['proj_lon'].iloc[range(hdg_start_nr, len(fl_df))] = proj_coord_lon
-
-    return fl_df
-
-
-def calc_coord_dst(c1, c2):
-    R = 6371.1 * 1000  # Radius of the Earth in m
-
-    lat1 = c1[0]
-    lon1 = c1[1]
-    lat2 = c2[0]
-    lon2 = c2[1]
-
-    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
-
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-
-    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
-    d = R * c
-    return d
-
-
-def calc_coord_dst_simple(c1, c2):
-    R = 6371.1 * 1000  # Radius of the Earth in m
-
-    lon1 = c1[0]
-    lat1 = c1[1]
-    lon2 = c2[0]
-    lat2 = c2[1]
-
-    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
-
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-
-    x = dlon * math.cos(dlat / 2)
-    y = dlat
-    d = math.sqrt(x * x + y * y) * R
-
-    return d
-
-
-def calc_bearing(c0, c1):
-    if not all(isinstance(i, tuple) for i in [c0, c1]):
-        return np.nan
-
-    lat1 = c0[0]
-    lon1 = c0[1]
-    lat2 = c1[0]
-    lon2 = c1[1]
-
-    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
-
-    dlon = lon2 - lon1
-
-    x = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dlon)
-    y = math.sin(dlon) * math.cos(lat2)
-    bearing = math.atan2(y, x)
-
-    return math.degrees(bearing)
-
-
-def calc_compass_bearing(c0, c1):
-    if not all(isinstance(i, tuple) for i in [c0, c1]):
-        return np.nan
-
-    lat1 = c0[0]
-    lon1 = c0[1]
-    lat2 = c1[0]
-    lon2 = c1[1]
-
-    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
-
-    dlon = lon2 - lon1
-
-    x = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dlon)
-    y = math.sin(dlon) * math.cos(lat2)
-    bearing = math.atan2(y, x)
-
-    return (math.degrees(bearing) + 360) % 360
-
-
-def get_triangle_corner(d0, d1, d2):
-    bb = (d0 ** 2 + d1 ** 2 - d2 ** 2) / (2 * d0 * d1)
-    return math.acos(bb)
-
-
-def convert_knts_ms(spd):
-    return spd*0.51444
-
-
-def heading_diff(h1, h2):
-
-    r = (h2 - h1) % 360.0
-
-    if r >= 180.0:
-        r -= 360.0
-
-    return r
-
-
-def calc_track_errors(wp_last, wp_curr, wp_proj):
-    assert all(isinstance(i, tuple) for i in [wp_last, wp_curr, wp_proj]), "Coordinate entries are not tuples"
-
-    # dst_last_curr = calc_coord_dst_simple(wp_last, wp_curr)
-    # dst_last_proj = calc_coord_dst_simple(wp_last, wp_proj)
-    dst_proj_curr = calc_coord_dst_simple(wp_curr, wp_proj)
-
-    # hdg_last_proj = calc_compass_bearing(wp_last, wp_proj)
-    # hdg_last_curr = calc_compass_bearing(wp_last, wp_curr)
-    hdg_curr_proj = calc_compass_bearing(wp_curr, wp_proj)
-    hdg_curr_last = calc_compass_bearing(wp_curr, wp_last)
-
-    alpha = heading_diff(hdg_curr_proj, hdg_curr_last) #get_triangle_corner(dst_last_curr, dst_last_proj, dst_proj_curr)
-    tte = dst_proj_curr
-
-    if abs(alpha) < 90:
-        cte = math.sin(math.radians(alpha)) * tte
-        ate = -math.sqrt(tte ** 2 - cte ** 2)
-
-    else:
-        if alpha < 0:
-            cte = math.sin(math.radians(-180 - alpha)) * tte
-            ate = math.sqrt(tte ** 2 - cte ** 2)
-        else:
-            cte = math.sin(math.radians(180 - alpha)) * tte
-            ate = math.sqrt(tte ** 2 - cte ** 2)
-
-    return cte, ate, tte
 
 
 def create_projection_dict(fl_dd, lookahead_t):
@@ -254,9 +38,12 @@ def create_projection_dict(fl_dd, lookahead_t):
             wp_curr = (row[r['lat']], row[r['lon']])
             wp_proj = (row[r['proj_lat']], row[r['proj_lon']])
             cte, ate, tte = calc_track_errors(wp_last, wp_curr, wp_proj)
-            cte_arr.append(cte)
-            ate_arr.append(ate)
-            tte_arr.append(tte)
+            if not cte:
+                return None
+            else:
+                cte_arr.append(cte)
+                ate_arr.append(ate)
+                tte_arr.append(tte)
         else:
             cte_arr.append(0)
             ate_arr.append(0)
@@ -300,7 +87,7 @@ def flush_to_db(insert_lst, conn):
 
 if __name__ == "__main__":
 
-    la_time = 1200
+    la_time = 1400
     cnt = 0
     cnt_max = np.inf
     fl_len_min = la_time*0.6
@@ -317,7 +104,7 @@ if __name__ == "__main__":
         print("I am unable to connect to the database.")
         print(e)
 
-    max_inserts = 100
+    max_inserts = 500
     fetch_batch_size = max_inserts
     cnt = 0
 

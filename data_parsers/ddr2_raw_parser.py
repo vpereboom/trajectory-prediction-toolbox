@@ -83,7 +83,7 @@ if __name__ == '__main__':
     # I/O file locations to use
     from os import listdir
     from os.path import isfile, join
-    fpath = "D:\Victor\OneDrive\Documents\Studie\Msc. Thesis\Data\To Parse\DDR2"
+    fpath = "/mnt/59069d64-9ea5-4e20-9f29-fe60f14628ea/Thesis_data/to_parse/ddr2"#""D:\Victor\OneDrive\Documents\Studie\Msc. Thesis\Data\To Parse\DDR2"
     files = [f for f in listdir(fpath)]
 
     for f_csv in files:
