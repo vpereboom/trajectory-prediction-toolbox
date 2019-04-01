@@ -1,19 +1,11 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-import math
-import json
-import time
-import itertools
-from scipy import stats
 import psycopg2 as psql
 from psycopg2.extras import RealDictCursor
+import seaborn as sns
 
 import sys
 sys.path.append("..")
 from tools.flight_projection import *
 
-import seaborn as sns
 sns.set(color_codes=True)
 
 try:

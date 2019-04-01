@@ -6,6 +6,7 @@ import warnings
 import datetime
 
 from tools.db_connector import save_ddr2_flights_to_db
+from conf.config import input_data_columns
 
 warnings.filterwarnings("ignore")
 
@@ -15,10 +16,11 @@ def create_epoch_ts(r):
         dt_b = str(r['t_seg_b']) + '_' + str(r['dd_seg_b'])
         dt_e = str(r['t_seg_e']) + '_' + str(r['dd_seg_e'])
 
-        ep_seg_b = (
-                    datetime.datetime.strptime(dt_b, '%H%M%S_%y%m%d') - datetime.datetime(1970, 1, 1)).total_seconds()
-        ep_seg_e = (
-                    datetime.datetime.strptime(dt_e, '%H%M%S_%y%m%d') - datetime.datetime(1970, 1, 1)).total_seconds()
+        ep_seg_b = (datetime.datetime.strptime(dt_b, '%H%M%S_%y%m%d') -
+                    datetime.datetime(1970, 1, 1)).total_seconds()
+        ep_seg_e = (datetime.datetime.strptime(dt_e, '%H%M%S_%y%m%d') -
+                    datetime.datetime(1970, 1, 1)).total_seconds()
+
     except Exception as e:
         ep_seg_b = np.nan
         ep_seg_e = np.nan
@@ -40,8 +42,9 @@ def process_flid_df(df_in):
     df['ep_seg_b'] = eb_l
     df['ep_seg_e'] = ee_l
 
-    df[['lat_seg_b', 'lon_seg_b', 'lat_seg_e', 'lon_seg_e']] = df[['lat_seg_b', 'lon_seg_b', 'lat_seg_e',
-                                                                   'lon_seg_e']] / 60
+    df[['lat_seg_b', 'lon_seg_b', 'lat_seg_e', 'lon_seg_e']] = \
+        df[['lat_seg_b', 'lon_seg_b', 'lat_seg_e', 'lon_seg_e']] / 60
+
     df = df.drop(['t_seg_b', 't_seg_e', 'dd_seg_b', 'dd_seg_e'], axis=1)
 
     save_ddr2_flights_to_db(df)
@@ -50,12 +53,14 @@ def process_flid_df(df_in):
 
 
 def parallelize_on_flid_save_to_db(df_in, func):
-    """group the dataframe by icao address and process these using parallelization"""
+    """group the dataframe by icao address
+    and process these using parallelization"""
 
     pool = multiprocessing.Pool(multiprocessing.cpu_count())
     print("Number of unique icaos: %d", len(df_in['flight_id'].unique()))
 
-    res = pool.map(func, [group for name, group in pd.groupby(df_in, by=['flight_id'])])
+    res = pool.map(func, [group for name, group
+                          in pd.groupby(df_in, by=['flight_id'])])
     pool.close()
     pool.join()
 
@@ -75,15 +80,12 @@ def parse_ddr2_file(fin, cols, ftype):
 
 if __name__ == '__main__':
 
-    cols = ['seg_id', 'org', 'dst', 'ac_type', 't_seg_b', 't_seg_e', 'fl_seg_b',
-            'fl_seg_e', 'status', 'callsgn', 'dd_seg_b', 'dd_seg_e', 'lat_seg_b',
-            'lon_seg_b', 'lat_seg_e', 'lon_seg_e', 'flight_id', 'seq', 'seg_len',
-            'seg_par']
+    cols = input_data_columns['ddr2']
 
     # I/O file locations to use
     from os import listdir
     from os.path import isfile, join
-    fpath = "/mnt/59069d64-9ea5-4e20-9f29-fe60f14628ea/Thesis_data/to_parse/ddr2"#""D:\Victor\OneDrive\Documents\Studie\Msc. Thesis\Data\To Parse\DDR2"
+    fpath = "/mnt/59069d64-9ea5-4e20-9f29-fe60f14628ea/Thesis_data/to_parse/ddr2"
     files = [f for f in listdir(fpath)]
 
     for f_csv in files:

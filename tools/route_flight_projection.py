@@ -1,24 +1,17 @@
 import pandas as pd
 import math
 import numpy as np
-import datetime
-import time
-
-from pymongo import MongoClient
 
 from tools.nominal_flight_projection import calc_coord_dst
 from tools.nominal_flight_projection import get_triangle_corner
 from tools.nominal_flight_projection import calc_bearing
 from tools.nominal_flight_projection import find_coord_dst_hdg
 
-cl = MongoClient()
-db = cl['flights']
-col = db['ddr2_flights']
-col_combi = db['combi_ddr2_adsb']
-
 
 def evaluate_triangle(wp_1, wp_2, wp_ac):
-    [d_12, d_ac1, d_ac2] = [calc_coord_dst(wp_1, wp_2), calc_coord_dst(wp_1, wp_ac), calc_coord_dst(wp_2, wp_ac)]
+    [d_12, d_ac1, d_ac2] = [calc_coord_dst(wp_1, wp_2),
+                            calc_coord_dst(wp_1, wp_ac),
+                            calc_coord_dst(wp_2, wp_ac)]
 
     alpha_1 = get_triangle_corner(d_12, d_ac1, d_ac2)
     alpha_2 = get_triangle_corner(d_12, d_ac2, d_ac1)
@@ -80,9 +73,13 @@ def find_waypoint_index(wp, wp_list):
 
 
 def add_waypoints_seq(flight_df, route_wps):
+
     # Reset index to start at 0
     # Ensure all lat and lon values exist in the used rows
-    flight_df = flight_df[(flight_df['lat'].notnull() & flight_df['lon'].notnull())]
+
+    flight_df = flight_df[(flight_df['lat'].notnull() &
+                           flight_df['lon'].notnull())]
+
     flight_df = flight_df.reset_index(drop=True)
     route_wps = route_wps.reset_index(drop=True)
 
@@ -132,9 +129,13 @@ def add_waypoints_seq(flight_df, route_wps):
 
 
 def add_waypoints_free(flight_df, route_wps):
+
     # Reset index to start at 0
     # Ensure all lat and lon values exist in the used rows
-    flight_df = flight_df[(flight_df['lat'].notnull() & flight_df['lon'].notnull())]
+
+    flight_df = flight_df[(flight_df['lat'].notnull() &
+                           flight_df['lon'].notnull())]
+
     flight_df = flight_df.reset_index(drop=True)
     route_wps = route_wps.reset_index(drop=True)
 
@@ -245,7 +246,10 @@ if __name__ == '__main__':
         fl_dd = pd.DataFrame()
 
         for ii, r in df.iterrows():
-            cte, ate, tte = calc_track_errors(r['last_wp'], r['curr_wp'], r['wp_ac'])
+
+            cte, ate, tte = calc_track_errors(r['last_wp'], r['curr_wp'],
+                                              r['wp_ac'])
+
             cte_arr.append(cte)
             ate_arr.append(ate)
             tte_arr.append(tte)

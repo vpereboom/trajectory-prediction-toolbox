@@ -12,4 +12,4 @@ for f_csv in files:
     f_parsed = os.path.join(fpath_parsed, f_csv)
     print(f_in)
     parse_adsb_file(f_in)
-    os.rename(f_in, f_parsed) #Move file from "to_parse" to "parsed" folder
+    os.rename(f_in, f_parsed)  # Move file from "to_parse" to "parsed" folder

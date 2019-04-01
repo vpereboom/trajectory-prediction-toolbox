@@ -1,12 +1,14 @@
 import numpy as np
 import math
 import time
-import psycopg2 as psql
 import itertools
 import datetime
 import multiprocessing
-import pandas as pd
 from psycopg2.extras import RealDictCursor
+
+from tools.flight_projection import calc_coord_dst, calc_bearing
+from tools.flight_conflict_processor import postprocess_conflict
+from tools.db_connector import get_pg_conn
 
 
 def create_global_box(f1, f2):
@@ -51,95 +53,6 @@ def find_fl_boxes(f1, f2, boxes):
                 box_lst.append(box)
 
     return list(set(box_lst))
-
-
-def resample_flight(box, f):
-    """Flights should be zipped list like zip(lat,lon)"""
-
-    f_res = [(lat, lon, ts) for lat, lon, ts in f if (box[0] <= lat <= box[1]) & (box[2] <= lon <= box[3])]
-
-    return f_res
-
-
-def calc_coord_dst_simple(c1, c2):
-    R = 6371.1 * 1000  # Radius of the Earth in m
-
-    lon1 = c1[0]
-    lat1 = c1[1]
-    lon2 = c2[0]
-    lat2 = c2[1]
-
-    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
-
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-
-    x = dlon * math.cos(dlat / 2)
-    y = dlat
-    d = math.sqrt(x * x + y * y) * R
-
-    return d
-
-
-def calc_coord_dst(c1, c2):
-    R = 6371.1 * 1000  # Radius of the Earth in m
-
-    lat1 = c1[0]
-    lon1 = c1[1]
-    lat2 = c2[0]
-    lon2 = c2[1]
-
-    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
-
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-
-    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
-    d = R * c
-    return d
-
-
-def calc_bearing(c0, c1):
-    if not all(isinstance(i, tuple) for i in [c0, c1]):
-        return np.nan
-
-    lat1 = c0[0]
-    lon1 = c0[1]
-    lat2 = c1[0]
-    lon2 = c1[1]
-
-    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
-
-    dlon = lon2 - lon1
-
-    x = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dlon)
-    y = math.sin(dlon) * math.cos(lat2)
-    bearing = math.atan2(y, x)
-
-    return math.degrees(bearing)
-
-
-def box_area(box):
-    w = calc_coord_dst_simple([box[0], box[2]], [box[1], box[2]])
-    h = calc_coord_dst_simple([box[0], box[2]], [box[0], box[3]])
-
-    return w * h
-
-
-def closest_distance(f1, f2):
-    """Flights should be zipped list like zip(lat,lon)"""
-
-    x = [[np.sqrt((c1[0] - c2[0]) ** 2 + (c1[1] - c2[1]) ** 2) for c1 in f1] for c2 in f2]
-    dmin = np.nanmin(x)
-    if2, if1 = np.where(x == dmin)
-
-    c2 = f2[if2[0]]
-    c1 = f1[if1[0]]
-    dmin_m = calc_coord_dst(c1, c2)
-
-    return dmin_m, c1, c2
 
 
 def closest_distance_box(f1, f2, b):
@@ -203,52 +116,6 @@ def calc_coord_dst_pp(lon1, lat1, lon2, lat2):
     return d
 
 
-def postprocess_conflict(b):
-    df1 = pd.DataFrame()
-    for k in ['ts_1', 'lat_1', 'lon_1', 'alt_1', 'spd_1', 'hdg_1', 'roc_1']:
-        df1[k.strip('_1')] = b[k]
-    df2 = pd.DataFrame()
-    for k in ['ts_2', 'lat_2', 'lon_2', 'alt_2', 'spd_2', 'hdg_2', 'roc_2']:
-        df2[k.strip('_2')] = b[k]
-
-    df1['ts'] = df1['ts'].astype(int)
-    df2['ts'] = df2['ts'].astype(int)
-
-    if df1['ts'].max() > df2['ts'].max():
-        df_l = df1
-        df_r = df2
-        df_r['ts_n'] = df_r['ts'].astype(int)
-        sfx = ('_1', '_2')
-    else:
-        df_l = df2
-        df_r = df1
-        df_r['ts_n'] = df_r['ts'].astype(int)
-        sfx = ('_2', '_1')
-
-    dfm = pd.merge_asof(df_l, df_r, on='ts', direction='nearest', tolerance=10, suffixes=sfx)
-
-    dfm['td'] = dfm['ts'] - dfm['ts_n']
-    dfm = dfm.dropna(how='any')
-    if len(dfm) > 0:
-        dfm['dstd'] = dfm.apply(lambda r: calc_coord_dst_pp(r['lat_1'], r['lon_1'], r['lat_2'], r['lon_2']), axis=1)
-        dst = dfm['dstd'].iloc[-1]
-        dfm['ts_2'] = dfm['ts_n']
-        dfm['ts_1'] = dfm['ts']
-
-        b = dfm[['ts_1', 'lat_1', 'lon_1', 'alt_1', 'spd_1', 'hdg_1', 'roc_1',
-                 'ts_2', 'lat_2', 'lon_2', 'alt_2', 'spd_2', 'hdg_2', 'roc_2', 'dstd']].to_dict(orient='list')
-
-        b['td'] = dfm['td'].iloc[-1]
-        b['altd'] = abs(dfm['alt_1'].iloc[-1] - dfm['alt_2'].iloc[-1])
-        b['hdgd'] = abs(dfm['hdg_1'].iloc[-1] - dfm['hdg_2'].iloc[-1])
-        # b['dstd'] = dst
-
-        return b
-
-    else:
-        return None
-
-
 def get_conflicts(ep):
 
     fl_start_ep = ep
@@ -256,11 +123,7 @@ def get_conflicts(ep):
     max_dst = 5 * 1852
     alt_min = 15000
 
-    try:
-        conn = psql.connect("dbname='thesisdata' user='postgres' host='localhost' password='postgres'")
-    except Exception as e:
-        print("Unable to connect to the database.")
-        print(e)
+    conn = get_pg_conn()
 
     cur_read = conn.cursor(cursor_factory=RealDictCursor)
     cur_read.execute("SELECT ts, lat, lon, alt, spd, hdg, roc, start_ep, flight_id \
@@ -268,8 +131,6 @@ def get_conflicts(ep):
                      AND start_ep BETWEEN %s AND %s;",
                      (fl_start_ep - ts_offset, fl_start_ep + ts_offset))
 
-    f_list = []
-    fsets = []
     sql_inj_lst = []
     col_lst = ['td', 'altd', 'dstd', 'hdgd',
                'flight_id_1', 'ts_1', 'lat_1', 'lon_1', 'alt_1', 'spd_1', 'hdg_1', 'roc_1',
@@ -373,11 +234,7 @@ def get_conflicts(ep):
 
 if __name__ == "__main__":
 
-    try:
-        conn = psql.connect("dbname='thesisdata' user='postgres' host='localhost' password='postgres'")
-    except Exception as e:
-        print("Unable to connect to the database.")
-        print(e)
+    conn = get_pg_conn()
 
     cur_ts = conn.cursor(cursor_factory=RealDictCursor)
     cur_ts.execute("SELECT start_ep, flight_id \
