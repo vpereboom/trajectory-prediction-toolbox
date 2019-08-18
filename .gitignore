@@ -102,3 +102,6 @@ ENV/
 
 # Pickle files
 *.pkl
+
+# IntelliJ / Pycharm
+.idea/
