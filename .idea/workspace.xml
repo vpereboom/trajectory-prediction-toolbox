@@ -2,33 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fdc4386e-dcd1-4a5a-9c82-b4075d494808" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/tools/flight_conflict_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_parsers/adsb_decoder.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_parsers/adsb_raw_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_parsers/adsb_raw_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_parsers/ddr2_raw_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_parsers/ddr2_raw_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_parsers/decode_adsb_multi_process.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Conflict Scenario Processing Box approach.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Conflict Scenario Processing.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/DDR and ADSB merging.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Deterministic Conflict Analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Deterministic Conflict Analysis.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/Deterministic Projection Analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Deterministic Projection Analysis.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/notebooks/Flight Stat Analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Flight Stat Analysis.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Intent Conflict Analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Intent Conflict Analysis.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Intent Projection Analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Intent Projection Analysis.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Nominal Projection Analysis.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Postgres test.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/Probabilistic Projection Analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Probabilistic Projection Analysis.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notebooks/PyMC tests.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/PyMC tests.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/flight_conflict_processor.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/flight_conflict_processor_box.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/flight_conflict_processor_box.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/intent_conflict_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/intent_conflict_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/parse_adsb_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/parse_adsb_files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/db_connector.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/db_connector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/Process Method Results.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/notebooks/Process Method Results.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/evaluate_conflicts.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/evaluate_conflicts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/conflict_handling.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/conflict_handling.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tools/flight_projection.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/flight_projection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/flight_segregator.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/flight_segregator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tools/nominal_flight_projection.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/nominal_flight_projection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/route_flight_projection.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/route_flight_projection.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,6 +20,18 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tools/conflict_handling.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="10080">
+              <caret line="683" column="20" selection-start-line="683" selection-start-column="20" selection-end-line="683" selection-end-column="20" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/conf/config.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="30">
@@ -48,22 +41,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tools/conflict_handling.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8880">
-              <caret line="603" column="12" selection-start-line="603" selection-start-column="12" selection-end-line="603" selection-end-column="12" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tools/flight_projection.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5559">
-              <caret line="181" column="24" selection-start-line="181" selection-start-column="4" selection-end-line="181" selection-end-column="24" />
+            <state relative-caret-position="7650">
+              <caret line="514" column="62" selection-start-line="514" selection-start-column="62" selection-end-line="514" selection-end-column="62" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -71,20 +52,36 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tools/flight_conflict_processor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="841">
-              <caret line="103" column="5" selection-start-line="103" selection-start-column="5" selection-end-line="103" selection-end-column="5" />
+            <state relative-caret-position="3030">
+              <caret line="218" column="46" selection-start-line="218" selection-start-column="46" selection-end-line="218" selection-end-column="46" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+                <marker date="1549730334144" expanded="true" signature="8774:18035" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tools/db_connector.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1740">
+              <caret line="117" column="12" selection-start-line="117" selection-start-column="12" selection-end-line="117" selection-end-column="12" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/evaluate_conflicts.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-390">
-              <caret line="17" selection-start-line="17" selection-end-line="17" />
+            <state relative-caret-position="486">
+              <caret line="80" column="1" selection-start-line="80" selection-start-column="1" selection-end-line="80" selection-end-column="1" />
               <folding>
                 <element signature="e#0#22#0" expanded="true" />
               </folding>
@@ -103,18 +100,12 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>exp_</find>
-      <find>closest_di</find>
-      <find>closest_d</find>
-      <find>exp_conflicts</find>
-      <find>converging</find>
       <find>Conflict</find>
       <find>Conflict!</find>
       <find>print(</find>
       <find>min(</find>
       <find>prepro</find>
       <find>crop</find>
-      <find>crop_ddr2</find>
       <find>int(</find>
       <find>merge_fl</find>
       <find>align_fl</find>
@@ -131,8 +122,14 @@
       <find>get_delta_dst</find>
       <find>not all</find>
       <find>di</find>
-      <find>add_way</find>
       <find>_wps_1</find>
+      <find>create_</find>
+      <find>_intent</find>
+      <find>get_intent_ttc</find>
+      <find>heading</find>
+      <find>crop_</find>
+      <find>crop_ddr2</find>
+      <find>add_way</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -158,7 +155,6 @@
         <option value="$PROJECT_DIR$/scripts/process_actual_conflicts.py" />
         <option value="$PROJECT_DIR$/data_parsers/ddr2_raw_parser.py" />
         <option value="$PROJECT_DIR$/scripts/parse_adsb_files.py" />
-        <option value="$PROJECT_DIR$/tools/nominal_flight_projection.py" />
         <option value="$PROJECT_DIR$/tools/route_flight_projection.py" />
         <option value="$PROJECT_DIR$/tools/stochastic_projection.py" />
         <option value="$PROJECT_DIR$/scripts/create_kde_estimators.py" />
@@ -169,11 +165,12 @@
         <option value="$PROJECT_DIR$/tools/db_connector.py" />
         <option value="$PROJECT_DIR$/data_parsers/adsb_raw_parser.py" />
         <option value="$PROJECT_DIR$/tools/create_1d_kde_estimator.py" />
-        <option value="$PROJECT_DIR$/tools/flight_projection.py" />
         <option value="$PROJECT_DIR$/conf/config.py" />
-        <option value="$PROJECT_DIR$/scripts/evaluate_conflicts.py" />
-        <option value="$PROJECT_DIR$/tools/conflict_handling.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/tools/nominal_flight_projection.py" />
+        <option value="$PROJECT_DIR$/tools/flight_projection.py" />
+        <option value="$PROJECT_DIR$/tools/conflict_handling.py" />
+        <option value="$PROJECT_DIR$/scripts/evaluate_conflicts.py" />
       </list>
     </option>
   </component>
@@ -183,6 +180,7 @@
     <option name="width" value="1871" />
     <option name="height" value="1053" />
   </component>
+  <component name="ProjectId" id="1PabMb8Q6Vj04STLNR7Aejs3JnJ" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
@@ -191,7 +189,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -223,6 +220,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -250,27 +248,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.evaluate_conflicts">
-    <configuration name="allft_parser" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="trajectory-prediction-toolbox" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/data_parsers" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/data_parsers/allft_parser.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="create_1d_kde_estimator" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="trajectory-prediction-toolbox" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -305,6 +282,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/evaluate_conflicts.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="nominal_flight_projection" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="trajectory-prediction-toolbox" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tools" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tools/nominal_flight_projection.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -356,19 +354,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.allft_parser" />
       <item itemvalue="Python.create_1d_kde_estimator" />
       <item itemvalue="Python.evaluate_conflicts" />
+      <item itemvalue="Python.nominal_flight_projection" />
       <item itemvalue="Python.parse_adsb_files" />
       <item itemvalue="Python.preprocess_conflicts" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.evaluate_conflicts" />
+        <item itemvalue="Python.nominal_flight_projection" />
         <item itemvalue="Python.create_1d_kde_estimator" />
         <item itemvalue="Python.preprocess_conflicts" />
         <item itemvalue="Python.parse_adsb_files" />
-        <item itemvalue="Python.allft_parser" />
       </list>
     </recent_temporary>
   </component>
@@ -399,7 +397,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.16666667" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.16666667" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Python Console" order="0" weight="0.3286638" />
       <window_info anchor="bottom" id="Terminal" order="1" weight="0.3286638" />
@@ -418,16 +416,16 @@
     </layout>
     <layout-to-restore>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.18668832" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.16666667" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Python Console" order="0" weight="0.3286638" />
       <window_info anchor="bottom" id="Terminal" order="1" weight="0.3286638" />
-      <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" order="2" sideWeight="0.50054115" side_tool="true" weight="0.30172414" />
       <window_info anchor="bottom" id="Version Control" order="3" weight="0.32901832" />
       <window_info anchor="bottom" id="Message" order="4" />
       <window_info anchor="bottom" id="Find" order="5" weight="0.3297414" />
-      <window_info anchor="bottom" id="Run" order="6" weight="0.30818966" />
-      <window_info anchor="bottom" id="Debug" order="7" weight="0.33405173" />
+      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49945888" visible="true" weight="0.2650862" />
+      <window_info anchor="bottom" id="Debug" order="7" weight="0.2823276" />
       <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="10" weight="0.32901832" />
@@ -514,6 +512,16 @@
           <line>59</line>
           <option name="timeStamp" value="203" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tools/conflict_handling.py</url>
+          <line>763</line>
+          <option name="timeStamp" value="204" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tools/conflict_handling.py</url>
+          <line>753</line>
+          <option name="timeStamp" value="205" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
@@ -558,35 +566,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/intent_conflict_analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/process_projected_conflicts.py" />
     <entry file="file://$PROJECT_DIR$/scripts/process_overlapping_flights.py" />
-    <entry file="file://$PROJECT_DIR$/tools/nominal_flight_projection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="741">
-          <caret line="205" column="53" selection-start-line="205" selection-start-column="53" selection-end-line="205" selection-end-column="53" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tools/stochastic_projection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="536">
-          <caret line="150" selection-start-line="150" selection-end-line="150" />
-          <folding>
-            <element signature="e#1#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/create_kde_estimators.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
@@ -604,32 +585,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tools/route_flight_projection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3720">
-          <caret line="248" selection-start-line="248" selection-end-line="248" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data_parsers/ddr2_raw_parser.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="25" column="25" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tools/db_connector.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="846">
-          <caret line="117" column="12" selection-start-line="117" selection-start-column="12" selection-end-line="117" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -678,21 +639,64 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tools/flight_conflict_processor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1950">
-          <caret line="218" column="46" selection-start-line="218" selection-start-column="46" selection-end-line="218" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-            <marker date="1549730334144" expanded="true" signature="8774:18035" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tools/create_1d_kde_estimator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="936">
           <caret line="121" selection-start-line="121" selection-end-line="121" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="841">
+          <caret line="103" column="5" selection-start-line="103" selection-start-column="5" selection-end-line="103" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/stochastic_projection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="150" selection-start-line="150" selection-end-line="150" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/route_flight_projection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="516">
+          <caret line="248" selection-start-line="248" selection-end-line="248" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/intent_conflict_analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2265">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/nominal_flight_projection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2340">
+          <caret line="164" column="55" selection-start-line="164" selection-start-column="55" selection-end-line="164" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/conflict_handling.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="10080">
+          <caret line="683" column="20" selection-start-line="683" selection-start-column="20" selection-end-line="683" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -703,40 +707,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tools/conflict_handling.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8880">
-          <caret line="603" column="12" selection-start-line="603" selection-start-column="12" selection-end-line="603" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/evaluate_conflicts.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-390">
-          <caret line="17" selection-start-line="17" selection-end-line="17" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tools/flight_projection.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5559">
-          <caret line="181" column="24" selection-start-line="181" selection-start-column="4" selection-end-line="181" selection-end-column="24" />
+        <state relative-caret-position="7650">
+          <caret line="514" column="62" selection-start-line="514" selection-start-column="62" selection-end-line="514" selection-end-column="62" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
+    <entry file="file://$PROJECT_DIR$/tools/flight_conflict_processor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="841">
-          <caret line="103" column="5" selection-start-line="103" selection-start-column="5" selection-end-line="103" selection-end-column="5" />
+        <state relative-caret-position="3030">
+          <caret line="218" column="46" selection-start-line="218" selection-start-column="46" selection-end-line="218" selection-end-column="46" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <marker date="1549730334144" expanded="true" signature="8774:18035" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tools/db_connector.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1740">
+          <caret line="117" column="12" selection-start-line="117" selection-start-column="12" selection-end-line="117" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/evaluate_conflicts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="486">
+          <caret line="80" column="1" selection-start-line="80" selection-start-column="1" selection-end-line="80" selection-end-column="1" />
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

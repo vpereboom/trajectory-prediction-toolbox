@@ -489,7 +489,7 @@ def add_waypoints_free(flight_df, route_wps):
 def add_waypoints(b):
     dc = {k: b[k] for k in ['ep_seg_b', 'lat_seg_b', 'lon_seg_b',
                             'lat_seg_e', 'lon_seg_e']}
-    ac = {k: b[k] for k in ['ts', 'lat', 'lon', 'spd', 'hdg']}
+    ac = {k: b[k] for k in ['ts', 'lat', 'lon', 'spd', 'hdg', 'alt']}
 
     dc = pd.DataFrame.from_dict(dc)
     ac = pd.DataFrame.from_dict(ac)
@@ -512,7 +512,7 @@ def add_waypoints(b):
 def add_waypoint_segments(b):
     dc = {k: b[k] for k in ['ep_seg_b', 'lat_seg_b', 'lon_seg_b',
                             'lat_seg_e', 'lon_seg_e']}
-    ac = {k: b[k] for k in ['ts', 'lat', 'lon', 'spd', 'hdg']}
+    ac = {k: b[k] for k in ['ts', 'lat', 'lon', 'spd', 'hdg', 'alt']}
 
     dc = pd.DataFrame.from_dict(dc)
     ac = pd.DataFrame.from_dict(ac)

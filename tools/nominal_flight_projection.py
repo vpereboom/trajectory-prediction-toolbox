@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import multiprocessing
 from psycopg2.extras import RealDictCursor
 import time
@@ -110,7 +111,7 @@ def process_flights(sub_batch):
         fl_d = fl_d[fl_d['alt'] > flight_level_min]
 
         if (fl_d['ts'].max() - fl_d['ts'].min()) < la_time:
-            print("Flight too short above selected FL")
+            # print("Flight too short above selected FL")
             continue
 
         else:
@@ -149,11 +150,11 @@ if __name__ == "__main__":
 
     cnt = 0
     cnt_max = np.inf
-    limit = 1000
+    limit = 5000
     offset = 0
     limit_d = limit
     cnt = 0
-    flight_limit = np.inf
+    flight_limit = 20000
 
     column_order_lst_proj = ["flight_length", "icao", "flight_id", "alt_min",
                              "alt_max", "start_lat", "start_lon", "end_lat",

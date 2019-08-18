@@ -430,15 +430,16 @@ def get_detection_class_single(ttca, ttce):
         return 'FP'
 
     if ~np.isnan(ttce) and ~np.isnan(ttca) and ttca <= la_time\
-            and (-120 < (ttce - ttca) <= ttca*0.1):
+            and (-10 < (ttce - ttca) <= 10):
+            # and (-120 < (ttce - ttca) <= ttca * 0.1):
         return 'TP'
 
     if ~np.isnan(ttce) and ~np.isnan(ttca) and ttca <= la_time \
-            and ((ttce - ttca) < -120):
+            and ((ttce - ttca) < -10):
         return 'FP'
 
     if ~np.isnan(ttce) and ~np.isnan(ttca) and ttca <= la_time\
-            and ((ttce - ttca) > ttca*0.1):
+            and ((ttce - ttca) > 10):
         return 'FN'
 
     return 'Error'
@@ -541,8 +542,8 @@ def get_tcps(b):
 def process_flight_batch_tstep(bx, prob_flag=False, intent_flag=False):
 
     exp_keys = ['ts_1', 'ts_2', 'lat_1', 'lon_1', 'lat_2', 'lon_2', 'hdg_1',
-                'hdg_2', 'hdg_e_1', 'hdg_e_2', 'spd_1', 'spd_2', 'spd_e_1',
-                'spd_e_2']
+                'hdg_2', 'alt_1', 'alt_2', 'hdg_e_1', 'hdg_e_2', 'spd_1',
+                'spd_2', 'spd_e_1', 'spd_e_2']
 
     if intent_flag is True:
         exp_keys.extend(['wp_seg_1', 'wp_seg_2'])
@@ -584,9 +585,13 @@ def process_flight_batch_tstep(bx, prob_flag=False, intent_flag=False):
             if len(confl_ix) > 0:
                 confl_i = confl_ix[0]
                 confl_ts = b['ts_1'][confl_i]
+                alt_c_1 = b['alt_1'][confl_i]
+                alt_c_2 = b['alt_2'][confl_i]
 
             else:
                 confl_ts = None
+                alt_c_1 = np.nan
+                alt_c_2 = np.nan
 
             if confl_ts:
                 print('conflict')
@@ -605,15 +610,17 @@ def process_flight_batch_tstep(bx, prob_flag=False, intent_flag=False):
 
             for i, t in enumerate(b['ts_1']):
 
+                dt = tmax - t
+
                 if t > tmax:
                     break
 
                 if confl_ts:
-                    ttc_act_i = confl_ts - b['ts_1'][i]
-                    t_la_max = int((tmax - b['ts_1'][i]) * 2)
+                    ttc_act_i = confl_ts - t
+                    t_la_max = int((tmax - t)) + 1200 #int((tmax - b['ts_1'][i]) * 2)
                 else:
                     ttc_act_i = np.nan
-                    t_la_max = int(tmax - b['ts_1'][i])
+                    t_la_max = int(b['ts_1'][-1] - t) #int(tmax - b['ts_1'][i])
 
                 if prob_flag is True:
                     ttc_est_i = get_proba_ttc_est(b['lat_1'][i],
@@ -666,7 +673,10 @@ def process_flight_batch_tstep(bx, prob_flag=False, intent_flag=False):
                                             b['spd_e_2'][i], t_la_max)
 
                 # if ttc_est_i:
-                ttc_res_i.append((t_la_max, ttc_act_i, ttc_est_i))
+                hdg_diff_i = heading_diff(b['hdg_1'][i], b['hdg_2'][i])
+                ttc_res_i.append((dt, ttc_act_i, ttc_est_i,
+                                  b['alt_1'][i], b['alt_2'][i],
+                                  alt_c_1, alt_c_2, hdg_diff_i))
 
         except Exception as e:
             print('Creating ttc_est failed:')
@@ -716,7 +726,8 @@ def preprocess_det_conflicts(batch):
 
 
 def preprocess_intent_conflicts(batch):
-    res_batch = []
+    res_batch_intent = []
+    res_batch_reg = []
 
     for bi in batch:
 
@@ -811,7 +822,7 @@ def preprocess_intent_conflicts(batch):
                     (x['wp_seg'][2][2], x['wp_seg'][2][3])),
                                            axis=1)
 
-                for k in ['ts', 'lat', 'lon', 'hdg', 'spd', 'wp_seg']:
+                for k in ['ts', 'lat', 'lon', 'alt', 'hdg', 'spd', 'wp_seg']:
                     b['%s_1' % k] = fl1_n[k].tolist()
                     b['%s_2' % k] = fl2_n[k].tolist()
 
@@ -820,14 +831,21 @@ def preprocess_intent_conflicts(batch):
                 b['spd_e_1'] = fl1_n['spd'].tolist()
                 b['spd_e_2'] = fl2_n['spd'].tolist()
 
-                res_batch.append(b)
+                res_batch_intent.append(b)
+
+                b['hdg_e_1'] = fl1_n['hdg']
+                b['hdg_e_2'] = fl2_n['hdg']
+                b['spd_e_1'] = fl1_n['spd']
+                b['spd_e_2'] = fl2_n['spd']
+
+                res_batch_reg.append(b)
 
             except Exception as e:
                 print('Preprocessing data failed, error:')
                 print(e)
                 continue
 
-    return res_batch
+    return (res_batch_intent, res_batch_reg)
 
 
 # def preprocess_intent_conflicts(batch):
